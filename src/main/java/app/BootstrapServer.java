@@ -1,5 +1,6 @@
 package app;
 
+import app.model.BootstrapInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -16,16 +17,7 @@ import java.util.Scanner;
 public class BootstrapServer {
     private volatile boolean working = true;
     private final List<Integer> activeWorkerIds;
-
-    private static class BootstrapInfo {
-        private final int port;
-        private final String ipAddress;
-
-        private BootstrapInfo(int port, String ipAddress) {
-            this.port = port;
-            this.ipAddress = ipAddress;
-        }
-    }
+    public static BootstrapInfo info;
 
     private class BootstrapCLI implements Runnable {
         @Override
@@ -92,18 +84,8 @@ public class BootstrapServer {
     }
 
     public static void main(String[] args) {
-        BootstrapInfo info = null;
-        try {
-            String json = new String(Files.readAllBytes(Paths.get("src/main/resources/chaos/chaos_config.json")));
-            ObjectMapper mapper = new ObjectMapper();
-            info = mapper.readValue(json, BootstrapInfo.class);
-        } catch (IOException e) {
-            AppConfig.timestampedErrorPrint("Error trying to collect bootstrap information. Exiting...");
-            e.printStackTrace();
-            System.exit(0);
-        }
-        AppConfig.timestampedStandardPrint("Bootstrap server started on port: " + info.port);
+        AppConfig.timestampedStandardPrint("Bootstrap server started on port: " + AppConfig.BOOTSTRAP.getPort());
         BootstrapServer bootstrapServer = new BootstrapServer();
-        bootstrapServer.bootstrap(info.port);
+        bootstrapServer.bootstrap(info.getPort());
     }
 }

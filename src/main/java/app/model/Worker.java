@@ -9,16 +9,18 @@ public class Worker implements Serializable {
     private static final long serialVersionUID = 1204140642751721518L;
 
     private Integer port;
-    private String ipAddress;
+    private String bootstrapIpAddress;
+    private Integer bootstrapPort;
     private Integer weakLimit;
     private Integer strongLimit;
     private List<Job> jobs;
 
     public Worker() {}
 
-    public Worker(int port, String ipAddress, int weakLimit, int strongLimit, List<Job> jobs) {
+    public Worker(int port, String bootstrapIpAddress, Integer bootstrapPort, int weakLimit, int strongLimit, List<Job> jobs) {
         this.port = port;
-        this.ipAddress = ipAddress;
+        this.bootstrapIpAddress = bootstrapIpAddress;
+        this.bootstrapPort = bootstrapPort;
         this.weakLimit = weakLimit;
         this.strongLimit = strongLimit;
         this.jobs = jobs;
@@ -32,12 +34,20 @@ public class Worker implements Serializable {
         this.port = port;
     }
 
-    public String getIpAddress() {
-        return ipAddress;
+    public String getBootstrapIpAddress() {
+        return bootstrapIpAddress;
     }
 
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
+    public void setBootstrapIpAddress(String bootstrapIpAddress) {
+        this.bootstrapIpAddress = bootstrapIpAddress;
+    }
+
+    public Integer getBootstrapPort() {
+        return bootstrapPort;
+    }
+
+    public void setBootstrapPort(Integer bootstrapPort) {
+        this.bootstrapPort = bootstrapPort;
     }
 
     public Integer getWeakLimit() {
