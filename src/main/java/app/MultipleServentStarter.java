@@ -53,9 +53,9 @@ public class MultipleServentStarter {
         for (int i = 0; i < SERVENT_COUNT; i++) {
             try {
                 processBuilder = new ProcessBuilder("java", "-cp", "target\\classes\\app.ServentMain", String.valueOf(i));
-                processBuilder.redirectInput(new File("src/main/resources/chaos/input/worker" + i + "_in.txt"));
-                processBuilder.redirectOutput(new File("src/main/resources/chaos/output/worker" + i + "_out.txt"));
-                processBuilder.redirectError(new File("src/main/resources/chaos/error/worker" + i + "_err.txt"));
+                processBuilder.redirectInput(new File("src/main/resources/chaos/workers/worker_" + i + "/input.txt"));
+                processBuilder.redirectOutput(new File("src/main/resources/chaos/workers/worker_" + i + "/output.txt"));
+                processBuilder.redirectError(new File("src/main/resources/chaos/workers/worker_" + i + "/error.txt"));
 
                 Process worker = processBuilder.start();
                 serventProcesses.add(worker);

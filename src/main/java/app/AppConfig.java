@@ -27,12 +27,12 @@ public class AppConfig {
         System.err.println(timeFormat.format(now) + " - " + message);
     }
 
-    public static void readConfig(int serventId) {
+    public static void readConfig(int workerNumber) {
         try {
-            String json = new String(Files.readAllBytes(Paths.get("src/main/resources/chaos/workers/worker_config_" + serventId + ".json")));
+            String json = new String(Files.readAllBytes(Paths.get("src/main/resources/chaos/workers/worker_" + workerNumber + "/config.json")));
             ObjectMapper mapper = new ObjectMapper();
-            Worker worker = mapper.readValue(json, Worker.class);
-            BOOTSTRAP = new BootstrapInfo(worker.getBootstrapPort(), worker.getBootstrapIpAddress());
+            info = mapper.readValue(json, Worker.class);
+            BOOTSTRAP = new BootstrapInfo(info.getBootstrapPort(), info.getBootstrapIpAddress());
         } catch (IOException e) {
             timestampedErrorPrint("Couldn't read the config file. Exiting...");
             System.exit(0);

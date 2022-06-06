@@ -1,0 +1,39 @@
+{
+    "port":"1200",
+    "bootstrapIpAddress":"localhost",
+    "bootstrapPort":2000,
+    "weakLimit":3,
+    "strongLimit":4,
+    "jobs":[
+        {
+            "name":"babranje",
+            "pointCount":5,
+            "p":0.3,
+            "width":200,
+            "height":200,
+            "mainPoints":[
+                {
+                    "x":1,
+                    "y":0
+                },
+                {
+                    "x":2,
+                    "y":1
+                },
+                {
+                    "x":3,
+                    "y":4
+                },
+                {
+                    "x":1,
+                    "y":1
+                },
+                {
+                    "x":1,
+                    "y":6
+                }
+            ]
+        }
+
+    ]
+}

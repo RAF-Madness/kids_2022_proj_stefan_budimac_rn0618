@@ -10,15 +10,15 @@ public class ServentMain {
             AppConfig.timestampedErrorPrint("Please provide an id for this servent. Exiting...");
             System.exit(0);
         }
-        int serventId = -1;
+        int workerNumber = -1;
         int port;
         try {
-            serventId = Integer.parseInt(args[0]);
+            workerNumber = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
             AppConfig.timestampedErrorPrint("Servent id should be an integer. Exiting...");
             System.exit(0);
         }
-        AppConfig.readConfig(serventId);
+        AppConfig.readConfig(workerNumber);
         try {
             port = AppConfig.info.getPort();
             if (port < 1000 || port > 2000) {
