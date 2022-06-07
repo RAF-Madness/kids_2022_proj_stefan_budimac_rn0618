@@ -2,6 +2,9 @@ package app;
 
 import app.model.BootstrapInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import servent.message.Message;
+import servent.message.MessageType;
+import servent.message.util.MessageUtil;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -53,13 +56,13 @@ public class BootstrapServer {
         }
 
         Random r = new Random(System.currentTimeMillis());
+        Message workerMessage;
         while (working) {
             try {
                 Socket newWorkerSocket = listenerScoket.accept();
-                Scanner socketScanner = new Scanner(newWorkerSocket.getInputStream());
-                String message = socketScanner.nextLine();
-                if (message.equals("Hail")) {
-                    int newWorkerPort = socketScanner.nextInt();
+                workerMessage = MessageUtil.readMessage(newWorkerSocket);
+                if (workerMessage.getMessageType().equals(MessageType.HAIL)) {
+                    int newWorkerPort = workerMessage.getSenderPort();
                     System.out.println("Got " + newWorkerPort + ".");
                     PrintWriter socketWriter = new PrintWriter(newWorkerSocket.getOutputStream());
                     if (activeWorkerIds.size() == 0) {
@@ -71,8 +74,8 @@ public class BootstrapServer {
                     }
                     socketWriter.flush();
                     newWorkerSocket.close();
-                } else if (message.equals("New")) {
-                    int newWorkerPort = socketScanner.nextInt();
+                } else if (workerMessage.getMessageType().equals(MessageType.NEW_NODE)) {
+                    int newWorkerPort = workerMessage.getSenderPort();
                     System.out.println("Adding " + newWorkerPort);
                     activeWorkerIds.add(newWorkerPort);
                     newWorkerSocket.close();

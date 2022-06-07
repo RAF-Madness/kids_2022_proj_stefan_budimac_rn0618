@@ -1,7 +1,11 @@
 package app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serial;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 public class Worker implements Serializable {
@@ -14,6 +18,8 @@ public class Worker implements Serializable {
     private Integer weakLimit;
     private Integer strongLimit;
     private List<Job> jobs;
+    @JsonIgnore
+    private Integer id;
 
     public Worker() {}
 
@@ -72,5 +78,22 @@ public class Worker implements Serializable {
 
     public void setJobs(List<Job> jobs) {
         this.jobs = jobs;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public NodeInfo getNodeInfo() {
+        try {
+            return new NodeInfo(port, InetAddress.getLocalHost().getHostAddress(), id);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
