@@ -40,6 +40,11 @@ public abstract class BasicMessage implements Message {
     }
 
     @Override
+    public String getSenderIpAddress() {
+        return sender.getIpAddress();
+    }
+
+    @Override
     public String getRecieverIpAddress() {
         return receiver.getIpAddress();
     }

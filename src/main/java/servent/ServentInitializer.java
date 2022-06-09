@@ -2,15 +2,12 @@ package servent;
 
 import app.AppConfig;
 import app.model.NodeInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import servent.message.HailMessage;
 import servent.message.JoinMessage;
 import servent.message.Message;
 import servent.message.util.MessageUtil;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -21,15 +18,12 @@ public class ServentInitializer implements Runnable {
         int ret = -2;
         try {
             Socket bootstrapSocket = new Socket(AppConfig.info.getBootstrapIpAddress(), AppConfig.info.getBootstrapPort());
-            PrintWriter bootstrapWriter = new PrintWriter(bootstrapSocket.getOutputStream());
-            NodeInfo senderInfo = new NodeInfo(AppConfig.info.getPort(), InetAddress.getLocalHost().getHostAddress());
-            NodeInfo receiverInfo = new NodeInfo(AppConfig.info.getBootstrapPort(), AppConfig.info.getBootstrapIpAddress());
+            NodeInfo senderInfo = new NodeInfo(AppConfig.info.getPort(), InetAddress.getLocalHost().getHostAddress(), -1);
+            NodeInfo receiverInfo = new NodeInfo(AppConfig.info.getBootstrapPort(), AppConfig.info.getBootstrapIpAddress(), -1);
             Message hailMessage = new HailMessage(senderInfo, receiverInfo);
-            ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            String toSend = objectWriter.writeValueAsString(hailMessage);
-            bootstrapWriter.write(toSend);
-            bootstrapWriter.flush();
+            MessageUtil.sendMessage(hailMessage);
 
+            //ovde sad treba sacekati poruku ali to bi valjda vec trebalo SimpleServentListener da radi, sta sad??? (uradicu u SSL)
             Scanner bootstrapScanner = new Scanner(bootstrapSocket.getInputStream());
             ret = bootstrapScanner.nextInt();
             bootstrapSocket.close();
@@ -50,8 +44,8 @@ public class ServentInitializer implements Runnable {
             AppConfig.timestampedStandardPrint("First node to enter the chaos, welcome!");
         } else {
             try {
-                NodeInfo senderInfo = new NodeInfo(AppConfig.info.getPort(),  InetAddress.getLocalHost().getHostAddress());
-                NodeInfo receiverInfo = new NodeInfo(serventPort, "localhost???");
+                NodeInfo senderInfo = new NodeInfo(AppConfig.info.getPort(),  InetAddress.getLocalHost().getHostAddress(), -1);
+                NodeInfo receiverInfo = new NodeInfo(serventPort, "localhost???", -1);
                 Message joinMessage = new JoinMessage(senderInfo, receiverInfo);
                 MessageUtil.sendMessage(joinMessage);
             } catch (UnknownHostException e) {

@@ -19,7 +19,13 @@ public class Worker implements Serializable {
     private Integer strongLimit;
     private List<Job> jobs;
     @JsonIgnore
-    private Integer id;
+    private Integer workerId;
+    @JsonIgnore
+    private Worker previous;
+    @JsonIgnore
+    private Worker next;
+    @JsonIgnore
+    private Integer fractalId;
 
     public Worker() {}
 
@@ -80,20 +86,44 @@ public class Worker implements Serializable {
         this.jobs = jobs;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getWorkerId() {
+        return workerId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setWorkerId(Integer id) {
+        this.workerId = workerId;
     }
 
     public NodeInfo getNodeInfo() {
         try {
-            return new NodeInfo(port, InetAddress.getLocalHost().getHostAddress(), id);
+            return new NodeInfo(port, InetAddress.getLocalHost().getHostAddress(), workerId);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public Worker getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(Worker preveous) {
+        this.previous = preveous;
+    }
+
+    public Worker getNext() {
+        return next;
+    }
+
+    public void setNext(Worker next) {
+        this.next = next;
+    }
+
+    public Integer getFractalId() {
+        return fractalId;
+    }
+
+    public void setFractalId(Integer fractalId) {
+        this.fractalId = fractalId;
     }
 }

@@ -1,6 +1,8 @@
 package servent.message.util;
 
 import app.AppConfig;
+import app.model.Worker;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import servent.message.Message;
 
 import java.io.IOException;
@@ -14,7 +16,9 @@ public class MessageUtil {
         Message clientMessage = null;
         try {
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-            clientMessage = (Message) inputStream.readObject();
+            String json = (String) inputStream.readObject();
+            ObjectMapper mapper = new ObjectMapper();
+            clientMessage = mapper.readValue(json, Message.class);
             socket.close();
         } catch (IOException e) {
             AppConfig.timestampedErrorPrint("Error while reading socket on " + socket.getInetAddress() + ":" + socket.getPort());

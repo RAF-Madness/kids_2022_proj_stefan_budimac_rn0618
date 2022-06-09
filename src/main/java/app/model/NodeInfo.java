@@ -11,11 +11,6 @@ public class NodeInfo implements Serializable {
     private String ipAddress;
     private Integer id;
 
-    public NodeInfo(Integer port, String ipAddress) {
-        this.port = port;
-        this.ipAddress = ipAddress;
-    }
-
     public NodeInfo(Integer port, String ipAddress, Integer id) {
         this.port = port;
         this.ipAddress = ipAddress;

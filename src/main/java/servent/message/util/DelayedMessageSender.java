@@ -27,7 +27,7 @@ public class DelayedMessageSender implements Runnable {
         try {
             Socket sendSocket = new Socket(messageToSend.getRecieverIpAddress(), messageToSend.getRecieverPort());
             ObjectOutputStream outputStream = new ObjectOutputStream(sendSocket.getOutputStream());
-            outputStream.writeObject(messageToSend);
+            outputStream.writeObject(messageToSend.toJson());
             outputStream.flush();
             sendSocket.close();
         } catch (IOException e) {
