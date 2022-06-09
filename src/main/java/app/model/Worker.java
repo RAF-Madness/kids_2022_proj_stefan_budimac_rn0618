@@ -25,7 +25,7 @@ public class Worker implements Serializable {
     @JsonIgnore
     private Worker next;
     @JsonIgnore
-    private Integer fractalId;
+    private String fractalId;
 
     public Worker() {}
 
@@ -119,11 +119,11 @@ public class Worker implements Serializable {
         this.next = next;
     }
 
-    public Integer getFractalId() {
+    public String getFractalId() {
         return fractalId;
     }
 
-    public void setFractalId(Integer fractalId) {
+    public void setFractalId(String fractalId) {
         this.fractalId = fractalId;
     }
 }

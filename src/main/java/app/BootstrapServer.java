@@ -9,17 +9,16 @@ import servent.message.RejectMessage;
 import servent.message.util.MessageUtil;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BootstrapServer {
     private volatile boolean working = true;
-    private final List<NodeInfo> activeWorkers;
+    private final Map<Integer, NodeInfo> activeWorkers;
     public static BootstrapInfo bootstrapInfo;
 
     private class BootstrapCLI implements Runnable {
@@ -39,7 +38,7 @@ public class BootstrapServer {
     }
 
     public BootstrapServer() {
-        activeWorkers = new ArrayList<>();
+        activeWorkers = new ConcurrentHashMap<>();
     }
 
     public void bootstrap(int bootstrapPort, String bootstrapIpAddress) {
@@ -62,23 +61,18 @@ public class BootstrapServer {
                 Socket newWorkerSocket = listenerScoket.accept();
                 workerMessage = MessageUtil.readMessage(newWorkerSocket);
                 if (workerMessage.getMessageType().equals(MessageType.HAIL)) {
-                    int newWorkerPort = workerMessage.getSenderPort();
-                    System.out.println("Got " + newWorkerPort + ".");
+                    System.out.println("Got " + workerMessage.getSenderPort() + ".");
                     Message contactMessage;
                     if (activeWorkers.size() == 0) {
-                        //ako je bootstrap default port -1 sta onda sa drugim -1
                         NodeInfo senderInfo = new NodeInfo(bootstrapPort, bootstrapIpAddress, -1);
-                        NodeInfo receiverInfo = new NodeInfo(newWorkerPort, workerMessage.getSenderIpAddress(), -1);
+                        NodeInfo receiverInfo = new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1);
                         contactMessage = new ContactMessage(senderInfo, receiverInfo);
                         MessageUtil.sendMessage(contactMessage);
-                        activeWorkers.add(receiverInfo);
                     } else {
-                        int randomWorker = r.nextInt(activeWorkers.size());
-                        //sta raditi sa ovim, opcioni parametar u message?
-                        int workerPort = activeWorkers.get(randomWorker).getPort();
                         NodeInfo senderInfo = new NodeInfo(bootstrapPort, bootstrapIpAddress, -1);
-                        NodeInfo receiverInfo = new NodeInfo(newWorkerPort, workerMessage.getSenderIpAddress(), -1);
+                        NodeInfo receiverInfo = new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1);
                         contactMessage = new ContactMessage(senderInfo, receiverInfo);
+                        contactMessage.setMessageContent(getHighestIdInfo());
                         MessageUtil.sendMessage(contactMessage);
                     }
                     newWorkerSocket.close();
@@ -86,8 +80,10 @@ public class BootstrapServer {
                     int newWorkerPort = workerMessage.getSenderPort();
                     System.out.println("Adding " + newWorkerPort);
                     //sta staviti ovde za id??
-                    activeWorkers.add(new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1));
+                    activeWorkers.put(-1, new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1));
                     newWorkerSocket.close();
+                } else if (workerMessage.getMessageType().equals(MessageType.LEAVE)) {
+
                 }
             } catch (IOException e) {
                 NodeInfo senderInfo = new NodeInfo(bootstrapPort, bootstrapIpAddress, -1);
@@ -104,5 +100,15 @@ public class BootstrapServer {
         AppConfig.timestampedStandardPrint("Bootstrap server started on port: " + AppConfig.BOOTSTRAP.getPort());
         BootstrapServer bootstrapServer = new BootstrapServer();
         bootstrapServer.bootstrap(bootstrapInfo.getPort(), bootstrapInfo.getIpAddress());
+    }
+
+    private NodeInfo getHighestIdInfo() {
+        int highestId = -1;
+        for (Map.Entry<Integer, NodeInfo> entry : activeWorkers.entrySet()) {
+            if (entry.getKey() > highestId) {
+                highestId = entry.getKey();
+            }
+        }
+        return activeWorkers.get(highestId);
     }
 }

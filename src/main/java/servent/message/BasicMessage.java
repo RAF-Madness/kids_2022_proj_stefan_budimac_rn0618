@@ -12,7 +12,7 @@ public abstract class BasicMessage implements Message {
     private static final long serialVersionUID = 33333411141121156L;
 
     private MessageType type;
-    private String message;
+    private Object content;
     private NodeInfo sender;
     private NodeInfo receiver;
 
@@ -22,9 +22,9 @@ public abstract class BasicMessage implements Message {
         this.receiver = receiver;
     }
 
-    public BasicMessage(MessageType type, String message, NodeInfo sender, NodeInfo receiver) {
+    public BasicMessage(MessageType type, Object content, NodeInfo sender, NodeInfo receiver) {
         this.type = type;
-        this.message = message;
+        this.content = content;
         this.sender = sender;
         this.receiver = receiver;
     }
@@ -35,7 +35,7 @@ public abstract class BasicMessage implements Message {
     }
 
     @Override
-    public int getRecieverPort() {
+    public int getReceiverPort() {
         return receiver.getPort();
     }
 
@@ -45,7 +45,7 @@ public abstract class BasicMessage implements Message {
     }
 
     @Override
-    public String getRecieverIpAddress() {
+    public String getReceiverIpAddress() {
         return receiver.getIpAddress();
     }
 
@@ -55,8 +55,13 @@ public abstract class BasicMessage implements Message {
     }
 
     @Override
-    public String getMessageText() {
-        return message;
+    public Object getMessageContent() {
+        return content;
+    }
+
+    @Override
+    public void setMessageContent(Object content) {
+        this.content = content;
     }
 
     @Override

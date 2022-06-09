@@ -4,10 +4,11 @@ import java.io.Serializable;
 
 public interface Message extends Serializable {
     int getSenderPort();
-    int getRecieverPort();
+    int getReceiverPort();
     String getSenderIpAddress();
-    String getRecieverIpAddress();
+    String getReceiverIpAddress();
     MessageType getMessageType();
-    String getMessageText();
+    Object getMessageContent();
+    void setMessageContent(Object content);
     String toJson();
 }

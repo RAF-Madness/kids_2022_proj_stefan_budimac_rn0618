@@ -1,7 +1,6 @@
 package servent.message.util;
 
 import app.AppConfig;
-import app.model.Worker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import servent.message.Message;
 
