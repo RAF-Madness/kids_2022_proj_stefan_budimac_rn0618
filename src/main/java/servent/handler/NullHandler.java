@@ -4,7 +4,7 @@ import app.AppConfig;
 import servent.message.Message;
 
 public class NullHandler implements MessageHandler {
-    private final Message clientMessage;
+    private Message clientMessage;
 
     public NullHandler(Message clientMessage) {
         this.clientMessage = clientMessage;

@@ -8,7 +8,7 @@ public enum MessageType {
     WELCOME,
     CONNECTION_REQUEST,
     CONNECTION_RESPONSE,
-    ENTERED,
+    ENTER,
     JOIN,
     LEAVE,
     PURGE

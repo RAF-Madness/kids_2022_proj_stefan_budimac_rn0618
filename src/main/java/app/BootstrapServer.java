@@ -2,6 +2,8 @@ package app;
 
 import app.model.BootstrapInfo;
 import app.model.NodeInfo;
+import app.model.Worker;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import servent.message.ContactMessage;
 import servent.message.Message;
 import servent.message.MessageType;
@@ -11,8 +13,9 @@ import servent.message.util.MessageUtil;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,7 +57,6 @@ public class BootstrapServer {
             System.exit(0);
         }
 
-        Random r = new Random(System.currentTimeMillis());
         Message workerMessage = null;
         while (working) {
             try {
@@ -67,21 +69,22 @@ public class BootstrapServer {
                         NodeInfo senderInfo = new NodeInfo(bootstrapPort, bootstrapIpAddress, -1);
                         NodeInfo receiverInfo = new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1);
                         contactMessage = new ContactMessage(senderInfo, receiverInfo);
+                        contactMessage.getMessageContent().add(Boolean.TRUE);
                         MessageUtil.sendMessage(contactMessage);
                     } else {
                         NodeInfo senderInfo = new NodeInfo(bootstrapPort, bootstrapIpAddress, -1);
                         NodeInfo receiverInfo = new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1);
                         contactMessage = new ContactMessage(senderInfo, receiverInfo);
-                        contactMessage.setMessageContent(getHighestIdInfo());
+                        contactMessage.getMessageContent().add(Boolean.FALSE);
+                        contactMessage.getMessageContent().add(getHighestIdInfo());
                         MessageUtil.sendMessage(contactMessage);
                     }
                     newWorkerSocket.close();
                 } else if (workerMessage.getMessageType().equals(MessageType.JOIN)) {
-                    int newWorkerPort = workerMessage.getSenderPort();
-                    System.out.println("Adding " + newWorkerPort);
-                    //sta staviti ovde za id??
-                    activeWorkers.put(-1, new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1));
-                    newWorkerSocket.close();
+                    NodeInfo joinedNode = new NodeInfo(workerMessage.getSenderPort(),
+                            workerMessage.getSenderIpAddress(),
+                            workerMessage.getSenderId());
+                    activeWorkers.put(workerMessage.getSenderId(), joinedNode);
                 } else if (workerMessage.getMessageType().equals(MessageType.LEAVE)) {
 
                 }
@@ -97,7 +100,15 @@ public class BootstrapServer {
     }
 
     public static void main(String[] args) {
-        AppConfig.timestampedStandardPrint("Bootstrap server started on port: " + AppConfig.BOOTSTRAP.getPort());
+        String json;
+        try {
+            json = new String(Files.readAllBytes(Paths.get("src/main/resources/chaos/bootstrap_config.json")));
+            ObjectMapper mapper = new ObjectMapper();
+            bootstrapInfo = mapper.readValue(json, BootstrapInfo.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        AppConfig.timestampedStandardPrint("Bootstrap server started on port: " + bootstrapInfo.getPort());
         BootstrapServer bootstrapServer = new BootstrapServer();
         bootstrapServer.bootstrap(bootstrapInfo.getPort(), bootstrapInfo.getIpAddress());
     }

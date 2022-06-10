@@ -21,10 +21,6 @@ public class Worker implements Serializable {
     @JsonIgnore
     private Integer workerId;
     @JsonIgnore
-    private Worker previous;
-    @JsonIgnore
-    private Worker next;
-    @JsonIgnore
     private String fractalId;
 
     public Worker() {}
@@ -101,22 +97,6 @@ public class Worker implements Serializable {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public Worker getPrevious() {
-        return previous;
-    }
-
-    public void setPrevious(Worker preveous) {
-        this.previous = preveous;
-    }
-
-    public Worker getNext() {
-        return next;
-    }
-
-    public void setNext(Worker next) {
-        this.next = next;
     }
 
     public String getFractalId() {

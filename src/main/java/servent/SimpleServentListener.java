@@ -46,6 +46,18 @@ public class SimpleServentListener implements Runnable, Cancellable {
                     case WELCOME -> {
                         messageHandler = new WelcomeHandler(clientMessage);
                     }
+                    case CONNECTION_REQUEST -> {
+                        messageHandler = new ConnectionRequestHandler(clientMessage);
+                    }
+                    case CONNECTION_RESPONSE -> {
+                        messageHandler = new ConnectionResponseHandler(clientMessage);
+                    }
+                    case ENTER -> {
+                        messageHandler = new EnterHandler(clientMessage);
+                    }
+                    case REJECT -> {
+                        messageHandler = new RejectHandler();
+                    }
                 }
                 handlerThreadPool.submit(messageHandler);
             } catch (IOException e) {

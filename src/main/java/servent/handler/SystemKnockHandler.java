@@ -20,7 +20,12 @@ public class SystemKnockHandler implements MessageHandler {
         synchronized (AppConfig.idLock) {
             newId = AppConfig.WORKER_ID++;
         }
-        welcomeMessage.setMessageContent(new NodeInfo(clientMessage.getSenderPort(), clientMessage.getSenderIpAddress(), newId));
+        NodeInfo newNode = new NodeInfo(clientMessage.getSenderPort(), clientMessage.getSenderIpAddress(), newId);
+        synchronized (AppConfig.stateLock) {
+            AppConfig.state.setNext(newNode);
+        }
+        welcomeMessage.getMessageContent().add(newNode);
+        welcomeMessage.getMessageContent().add(AppConfig.state);
         MessageUtil.sendMessage(welcomeMessage);
     }
 }

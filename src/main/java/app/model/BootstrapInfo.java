@@ -1,8 +1,20 @@
 package app.model;
 
-public class BootstrapInfo {
-    private final int port;
-    private final String ipAddress;
+import java.io.Serializable;
+
+public class BootstrapInfo implements Serializable {
+    private int port;
+    private String ipAddress;
+
+    public BootstrapInfo() {}
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
 
     public BootstrapInfo(int port, String ipAddress) {
         this.port = port;
@@ -16,4 +28,6 @@ public class BootstrapInfo {
     public String getIpAddress() {
         return ipAddress;
     }
+
+
 }

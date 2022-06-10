@@ -14,28 +14,18 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class ServentInitializer implements Runnable {
-    private int getServentPort() {
-        int ret = -2;
+
+    @Override
+    public void run() {
         try {
-            Socket bootstrapSocket = new Socket(AppConfig.info.getBootstrapIpAddress(), AppConfig.info.getBootstrapPort());
             NodeInfo senderInfo = new NodeInfo(AppConfig.info.getPort(), InetAddress.getLocalHost().getHostAddress(), -1);
             NodeInfo receiverInfo = new NodeInfo(AppConfig.info.getBootstrapPort(), AppConfig.info.getBootstrapIpAddress(), -1);
             Message hailMessage = new HailMessage(senderInfo, receiverInfo);
             MessageUtil.sendMessage(hailMessage);
-
-            //ovde sad treba sacekati poruku ali to bi valjda vec trebalo SimpleServentListener da radi, sta sad??? (uradicu u SSL)
-            Scanner bootstrapScanner = new Scanner(bootstrapSocket.getInputStream());
-            ret = bootstrapScanner.nextInt();
-            bootstrapSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ret;
-    }
-
-    @Override
-    public void run() {
-        int serventPort = getServentPort();
+        /*
         if (serventPort == 2) {
             AppConfig.timestampedErrorPrint("Error while contacting bootstrap. Exiting...");
             System.exit(0);
@@ -52,5 +42,6 @@ public class ServentInitializer implements Runnable {
                 e.printStackTrace();
             }
         }
+        */
     }
 }
