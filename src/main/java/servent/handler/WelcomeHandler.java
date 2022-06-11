@@ -1,11 +1,15 @@
 package servent.handler;
 
 import app.AppConfig;
-import app.ChaosState;
+import app.model.KnockAnswer;
 import app.model.NodeInfo;
+import app.model.NodeInfoId;
 import servent.message.ConnectionRequestMessage;
 import servent.message.Message;
 import servent.message.util.MessageUtil;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class WelcomeHandler implements MessageHandler {
     private Message clientMessage;
@@ -16,14 +20,19 @@ public class WelcomeHandler implements MessageHandler {
 
     @Override
     public void run() {
-        NodeInfo content = (NodeInfo) clientMessage.getMessageContent().get(0);
-        AppConfig.info.setWorkerId(content.getId());
-        AppConfig.state = (ChaosState) clientMessage.getMessageContent().get(1);
-        NodeInfo senderInfo = new NodeInfo(clientMessage.getSenderPort(), clientMessage.getSenderIpAddress(), clientMessage.getSenderId());
+        KnockAnswer knockAnswer = (KnockAnswer) clientMessage.getMessageContent();
+        AppConfig.info.setWorkerId(knockAnswer.getNewId());
+        AppConfig.state = knockAnswer.getState();
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.setPrevious(senderInfo);
+            AppConfig.state.setPrevious(knockAnswer.getPredecessorInfo());
         }
-        Message connectionRequestMessage = new ConnectionRequestMessage(content, AppConfig.state.getFirstNode());
-        MessageUtil.sendMessage(connectionRequestMessage);
+        Message connectionRequestMessage = new ConnectionRequestMessage(AppConfig.info.getWorkerId(), 0);
+        try {
+            NodeInfo newNodeInfo = new NodeInfo(AppConfig.info.getPort(), InetAddress.getLocalHost().getHostAddress());
+            connectionRequestMessage.setMessageContent(newNodeInfo);
+            MessageUtil.sendMessage(connectionRequestMessage, AppConfig.state.getFirstNode());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 }

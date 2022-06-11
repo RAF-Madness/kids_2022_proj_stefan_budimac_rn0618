@@ -9,12 +9,10 @@ public class NodeInfo implements Serializable {
 
     private Integer port;
     private String ipAddress;
-    private Integer id;
 
-    public NodeInfo(Integer port, String ipAddress, Integer id) {
+    public NodeInfo(Integer port, String ipAddress) {
         this.port = port;
         this.ipAddress = ipAddress;
-        this.id = id;
     }
 
     public Integer getPort() {
@@ -23,9 +21,5 @@ public class NodeInfo implements Serializable {
 
     public String getIpAddress() {
         return ipAddress;
-    }
-
-    public Integer getId() {
-        return id;
     }
 }

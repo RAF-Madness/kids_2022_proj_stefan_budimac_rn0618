@@ -13,11 +13,9 @@ public class EnterHandler implements MessageHandler {
 
     @Override
     public void run() {
-        NodeInfo enteredNode = new NodeInfo(clientMessage.getSenderPort(),
-                                            clientMessage.getSenderIpAddress(),
-                                            (Integer) clientMessage.getMessageContent().get(0));
+        NodeInfo enteredNode = (NodeInfo) clientMessage.getMessageContent();
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.getNodes().put((Integer) clientMessage.getMessageContent().get(0), enteredNode);
+            AppConfig.state.getNodes().put(clientMessage.getSenderId(), enteredNode);
         }
     }
 }

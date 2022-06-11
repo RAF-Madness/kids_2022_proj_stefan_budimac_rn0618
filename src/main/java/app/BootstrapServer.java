@@ -1,8 +1,9 @@
 package app;
 
 import app.model.BootstrapInfo;
+import app.model.FirstNodeInfo;
 import app.model.NodeInfo;
-import app.model.Worker;
+import app.model.NodeInfoId;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import servent.message.ContactMessage;
 import servent.message.Message;
@@ -58,42 +59,38 @@ public class BootstrapServer {
         }
 
         Message workerMessage = null;
+        NodeInfo receiverInfo = null;
         while (working) {
             try {
                 Socket newWorkerSocket = listenerScoket.accept();
                 workerMessage = MessageUtil.readMessage(newWorkerSocket);
                 if (workerMessage.getMessageType().equals(MessageType.HAIL)) {
-                    System.out.println("Got " + workerMessage.getSenderPort() + ".");
+                    NodeInfo workerInfo = (NodeInfo) workerMessage.getMessageContent();
+                    System.out.println("Got " + workerInfo.getPort() + ".");
                     Message contactMessage;
+                    receiverInfo = new NodeInfo(workerInfo.getPort(), workerInfo.getIpAddress());
                     if (activeWorkers.size() == 0) {
-                        NodeInfo senderInfo = new NodeInfo(bootstrapPort, bootstrapIpAddress, -1);
-                        NodeInfo receiverInfo = new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1);
-                        contactMessage = new ContactMessage(senderInfo, receiverInfo);
-                        contactMessage.getMessageContent().add(Boolean.TRUE);
-                        MessageUtil.sendMessage(contactMessage);
+                        contactMessage = new ContactMessage(-1, -2);
+                        FirstNodeInfo nodeInfo = new FirstNodeInfo(Boolean.TRUE, receiverInfo);
+                        contactMessage.setMessageContent(nodeInfo);
+                        MessageUtil.sendMessage(contactMessage, receiverInfo);
                     } else {
-                        NodeInfo senderInfo = new NodeInfo(bootstrapPort, bootstrapIpAddress, -1);
-                        NodeInfo receiverInfo = new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1);
-                        contactMessage = new ContactMessage(senderInfo, receiverInfo);
-                        contactMessage.getMessageContent().add(Boolean.FALSE);
-                        contactMessage.getMessageContent().add(getHighestIdInfo());
-                        MessageUtil.sendMessage(contactMessage);
+                        contactMessage = new ContactMessage(-1, -2);
+                        NodeInfoId infoId = new NodeInfoId(getHighestId(), workerInfo);
+                        contactMessage.setMessageContent(infoId);
+                        MessageUtil.sendMessage(contactMessage, receiverInfo);
                     }
                     newWorkerSocket.close();
                 } else if (workerMessage.getMessageType().equals(MessageType.JOIN)) {
-                    NodeInfo joinedNode = new NodeInfo(workerMessage.getSenderPort(),
-                            workerMessage.getSenderIpAddress(),
-                            workerMessage.getSenderId());
-                    activeWorkers.put(workerMessage.getSenderId(), joinedNode);
+                    NodeInfo joinedNodeInfo = (NodeInfo) workerMessage.getMessageContent();
+                    activeWorkers.put(workerMessage.getSenderId(), joinedNodeInfo);
                 } else if (workerMessage.getMessageType().equals(MessageType.LEAVE)) {
 
                 }
             } catch (IOException e) {
-                NodeInfo senderInfo = new NodeInfo(bootstrapPort, bootstrapIpAddress, -1);
                 assert workerMessage != null;
-                NodeInfo receiverInfo = new NodeInfo(workerMessage.getSenderPort(), workerMessage.getSenderIpAddress(), -1);
-                Message rejectMessage = new RejectMessage(senderInfo, receiverInfo);
-                MessageUtil.sendMessage(rejectMessage);
+                Message rejectMessage = new RejectMessage(-1, -2);
+                MessageUtil.sendMessage(rejectMessage, receiverInfo);
                 e.printStackTrace();
             }
         }
@@ -121,5 +118,15 @@ public class BootstrapServer {
             }
         }
         return activeWorkers.get(highestId);
+    }
+
+    private Integer getHighestId() {
+        int highestId = -1;
+        for (Map.Entry<Integer, NodeInfo> entry : activeWorkers.entrySet()) {
+            if (entry.getKey() > highestId) {
+                highestId = entry.getKey();
+            }
+        }
+        return highestId;
     }
 }

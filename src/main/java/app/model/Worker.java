@@ -92,7 +92,7 @@ public class Worker implements Serializable {
 
     public NodeInfo getNodeInfo() {
         try {
-            return new NodeInfo(port, InetAddress.getLocalHost().getHostAddress(), workerId);
+            return new NodeInfo(port, InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

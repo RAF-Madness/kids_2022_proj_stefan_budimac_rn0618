@@ -1,6 +1,7 @@
 package servent.handler;
 
 import app.AppConfig;
+import app.model.KnockAnswer;
 import app.model.NodeInfo;
 import servent.message.Message;
 import servent.message.WelcomeMessage;
@@ -15,17 +16,17 @@ public class SystemKnockHandler implements MessageHandler {
 
     @Override
     public void run() {
-        Message welcomeMessage = new WelcomeMessage(AppConfig.info.getNodeInfo(), new NodeInfo(clientMessage.getSenderPort(), clientMessage.getSenderIpAddress(), -1));
         int newId;
         synchronized (AppConfig.idLock) {
             newId = AppConfig.WORKER_ID++;
         }
-        NodeInfo newNode = new NodeInfo(clientMessage.getSenderPort(), clientMessage.getSenderIpAddress(), newId);
+        Message welcomeMessage = new WelcomeMessage(-2, -1);
+        NodeInfo newNode = (NodeInfo) clientMessage.getMessageContent();
         synchronized (AppConfig.stateLock) {
             AppConfig.state.setNext(newNode);
         }
-        welcomeMessage.getMessageContent().add(newNode);
-        welcomeMessage.getMessageContent().add(AppConfig.state);
-        MessageUtil.sendMessage(welcomeMessage);
+        KnockAnswer knockAnswer = new KnockAnswer(newId, AppConfig.state, AppConfig.info.getNodeInfo());
+        welcomeMessage.setMessageContent(knockAnswer);
+        MessageUtil.sendMessage(welcomeMessage, newNode);
     }
 }

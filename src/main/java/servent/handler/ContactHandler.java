@@ -1,7 +1,9 @@
 package servent.handler;
 
 import app.AppConfig;
+import app.model.FirstNodeInfo;
 import app.model.NodeInfo;
+import app.model.NodeInfoId;
 import servent.message.JoinMessage;
 import servent.message.Message;
 import servent.message.SystemKnockMessage;
@@ -16,19 +18,21 @@ public class ContactHandler implements MessageHandler {
 
     @Override
     public void run() {
-        Boolean first = (Boolean) clientMessage.getMessageContent().get(0);
-        if (first) {
-            NodeInfo bootstrapInfo = new NodeInfo(AppConfig.info.getBootstrapPort(), AppConfig.info.getBootstrapIpAddress(), -1);
+        FirstNodeInfo messageContent = (FirstNodeInfo) clientMessage.getMessageContent();
+        if (messageContent.getFirst()) {
             int newId;
             synchronized (AppConfig.idLock) {
                 newId = AppConfig.WORKER_ID++;
             }
             AppConfig.info.setWorkerId(newId);
-            Message joinMessage = new JoinMessage(AppConfig.info.getNodeInfo(), bootstrapInfo);
-            MessageUtil.sendMessage(joinMessage);
+            Message joinMessage = new JoinMessage(newId, -1);
+            joinMessage.setMessageContent(messageContent.getNodeInfo());
+            MessageUtil.sendMessage(joinMessage, new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress()));
         } else {
-            Message systemKnockMessage = new SystemKnockMessage(AppConfig.info.getNodeInfo(), (NodeInfo) clientMessage.getMessageContent().get(1));
-            MessageUtil.sendMessage(systemKnockMessage);
+            NodeInfoId contactInfo = (NodeInfoId) clientMessage.getMessageContent();
+            Message systemKnockMessage = new SystemKnockMessage(-2, contactInfo.getNodeId());
+            systemKnockMessage.setMessageContent(contactInfo.getNodeInfo());
+            MessageUtil.sendMessage(systemKnockMessage, AppConfig.state.getNodes().get(contactInfo.getNodeId()));
         }
     }
 }

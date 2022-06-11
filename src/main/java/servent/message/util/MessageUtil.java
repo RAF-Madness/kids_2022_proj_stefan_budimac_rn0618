@@ -1,6 +1,7 @@
 package servent.message.util;
 
 import app.AppConfig;
+import app.model.NodeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import servent.message.Message;
 
@@ -30,8 +31,8 @@ public class MessageUtil {
         return clientMessage;
     }
 
-    public static void sendMessage(Message message) {
-        Thread delayedSender = new Thread(new DelayedMessageSender(message));
+    public static void sendMessage(Message message, NodeInfo receiverInfo) {
+        Thread delayedSender = new Thread(new DelayedMessageSender(message, receiverInfo));
         delayedSender.start();
     }
 }
