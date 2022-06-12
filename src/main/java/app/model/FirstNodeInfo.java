@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public class FirstNodeInfo implements Serializable {
     @Serial
-    private static final long serialVersionUID = 900909443421456L;
+    private static final long serialVersionUID = 911919443421456L;
 
     private Boolean first;
     private NodeInfo nodeInfo;

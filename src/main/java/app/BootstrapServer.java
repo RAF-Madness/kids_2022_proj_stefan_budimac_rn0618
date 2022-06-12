@@ -1,9 +1,6 @@
 package app;
 
-import app.model.BootstrapInfo;
-import app.model.FirstNodeInfo;
-import app.model.NodeInfo;
-import app.model.NodeInfoId;
+import app.model.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import servent.message.*;
@@ -24,6 +21,7 @@ public class BootstrapServer {
     private volatile boolean working = true;
     private final Map<Integer, NodeInfo> activeWorkers;
     public static BootstrapInfo bootstrapInfo;
+    public static final Object messageLock = new Object();
 
     private class BootstrapCLI implements Runnable {
         @Override
@@ -61,39 +59,42 @@ public class BootstrapServer {
         Message workerMessage = null;
         NodeInfo receiverInfo = null;
         while (working) {
-            try {
-                Socket newWorkerSocket = listenerScoket.accept();
-                workerMessage = MessageUtil.readMessage(newWorkerSocket);
-                if (workerMessage instanceof HailMessage) {
-                    NodeInfo workerInfo = (NodeInfo) workerMessage.getMessageContent();
-                    System.out.println("Got " + workerInfo.getPort() + ".");
-                    Message contactMessage;
-                    receiverInfo = new NodeInfo(workerInfo.getPort(), workerInfo.getIpAddress());
-                    if (activeWorkers.size() == 0) {
-                        contactMessage = new ContactMessage(-1, -2);
-                        FirstNodeInfo nodeInfo = new FirstNodeInfo(Boolean.TRUE, receiverInfo);
-                        contactMessage.setMessageContent(nodeInfo);
-                        MessageUtil.sendMessage(contactMessage, receiverInfo);
-                    } else {
-                        contactMessage = new ContactMessage(-1, -2);
-                        NodeInfoId infoId = new NodeInfoId(getHighestId(), workerInfo);
-                        contactMessage.setMessageContent(infoId);
-                        MessageUtil.sendMessage(contactMessage, receiverInfo);
+            synchronized (messageLock) {
+                try {
+                    Socket newWorkerSocket = listenerScoket.accept();
+                    workerMessage = MessageUtil.readMessage(newWorkerSocket);
+                    if (workerMessage instanceof HailMessage) {
+                        NodeInfo workerInfo = workerMessage.getSenderInfo();
+                        System.out.println("Got " + workerInfo.getPort() + ".");
+                        Message contactMessage;
+                        if (activeWorkers.size() == 0) {
+                            contactMessage = new ContactMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress), workerMessage.getSenderInfo());
+                            contactMessage.setMessageContent(new ContactContent(Boolean.TRUE, new NodeInfoId(-1, new NodeInfo())));
+                            MessageUtil.sendMessage(contactMessage);
+                        } else {
+                            contactMessage = new ContactMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress), workerMessage.getSenderInfo());
+                            contactMessage.setMessageContent(new ContactContent(Boolean.FALSE, new NodeInfoId(getHighestId(), getHighestIdInfo())));
+                            System.out.println(getHighestIdInfo().getPort());
+                            System.out.println(getHighestIdInfo().getIpAddress());
+                            System.out.println(getHighestId());
+                            MessageUtil.sendMessage(contactMessage);
+                        }
+                        newWorkerSocket.close();
+                    } else if (workerMessage instanceof JoinMessage) {
+                        Integer joinedNodeId = (Integer) workerMessage.getMessageContent();
+                        activeWorkers.put(joinedNodeId, workerMessage.getSenderInfo());
+                        System.out.println("Worker successfully added to the system!");
+                    } else if (workerMessage.getMessageType().equals(MessageType.LEAVE)) {
+
                     }
-                    newWorkerSocket.close();
-                } else if (workerMessage.getMessageType().equals(MessageType.JOIN)) {
-                    NodeInfo joinedNodeInfo = (NodeInfo) workerMessage.getMessageContent();
-                    activeWorkers.put(workerMessage.getSenderId(), joinedNodeInfo);
-                } else if (workerMessage.getMessageType().equals(MessageType.LEAVE)) {
+                } catch (SocketTimeoutException ignored) {
 
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    //assert workerMessage != null;
+                    //Message rejectMessage = new RejectMessage(-1, -2);
+                    //MessageUtil.sendMessage(rejectMessage, receiverInfo);
                 }
-            } catch (SocketTimeoutException ignored) {
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                //assert workerMessage != null;
-                //Message rejectMessage = new RejectMessage(-1, -2);
-                //MessageUtil.sendMessage(rejectMessage, receiverInfo);
             }
         }
     }

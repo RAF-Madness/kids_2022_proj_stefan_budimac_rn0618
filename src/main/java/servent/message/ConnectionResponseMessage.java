@@ -4,7 +4,7 @@ import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class ConnectionResponseMessage extends BasicMessage<NodeInfo> {
+public class ConnectionResponseMessage extends BasicMessage<Integer> {
     @Serial
     private static final long serialVersionUID = 74589488599604310L;
 
@@ -12,7 +12,7 @@ public class ConnectionResponseMessage extends BasicMessage<NodeInfo> {
         this.setMessageType(MessageType.CONNECTION_RESPONSE);
     }
 
-    public ConnectionResponseMessage(Integer senderId, Integer receiverId) {
-        super(MessageType.CONNECTION_RESPONSE, senderId, receiverId);
+    public ConnectionResponseMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
+        super(MessageType.CONNECTION_RESPONSE, senderInfo, receiverInfo);
     }
 }

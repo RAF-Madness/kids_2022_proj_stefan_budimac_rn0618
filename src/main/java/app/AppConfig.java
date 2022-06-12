@@ -16,7 +16,6 @@ public class AppConfig {
     public static BootstrapInfo BOOTSTRAP;
     public static Worker info;
     public static ChaosState state;
-    public static int WORKER_ID = 0;
     public static final Object idLock = new Object();
     public static final Object stateLock = new Object();
 

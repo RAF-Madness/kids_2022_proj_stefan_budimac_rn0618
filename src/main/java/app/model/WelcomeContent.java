@@ -5,18 +5,16 @@ import app.ChaosState;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class KnockAnswer implements Serializable {
+public class WelcomeContent implements Serializable {
     @Serial
     private static final long serialVersionUID = 700707443421456L;
 
     private Integer newId;
     private ChaosState state;
-    private NodeInfo predecessorInfo;
 
-    public KnockAnswer(Integer newId, ChaosState state, NodeInfo predecessorInfo) {
+    public WelcomeContent(Integer newId, ChaosState state) {
         this.newId = newId;
         this.state = state;
-        this.predecessorInfo = predecessorInfo;
     }
 
     public Integer getNewId() {
@@ -33,13 +31,5 @@ public class KnockAnswer implements Serializable {
 
     public void setState(ChaosState state) {
         this.state = state;
-    }
-
-    public NodeInfo getPredecessorInfo() {
-        return predecessorInfo;
-    }
-
-    public void setPredecessorInfo(NodeInfo predecessorInfo) {
-        this.predecessorInfo = predecessorInfo;
     }
 }

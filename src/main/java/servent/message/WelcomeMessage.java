@@ -1,10 +1,11 @@
 package servent.message;
 
-import app.model.KnockAnswer;
+import app.model.WelcomeContent;
+import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class WelcomeMessage extends BasicMessage<KnockAnswer> {
+public class WelcomeMessage extends BasicMessage<WelcomeContent> {
     @Serial
     private static final long serialVersionUID = 33388778877887788L;
 
@@ -12,7 +13,7 @@ public class WelcomeMessage extends BasicMessage<KnockAnswer> {
         this.setMessageType(MessageType.WELCOME);
     }
 
-    public WelcomeMessage(Integer senderId, Integer receiverId) {
-        super(MessageType.WELCOME, senderId, receiverId);
+    public WelcomeMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
+        super(MessageType.WELCOME, senderInfo, receiverInfo);
     }
 }

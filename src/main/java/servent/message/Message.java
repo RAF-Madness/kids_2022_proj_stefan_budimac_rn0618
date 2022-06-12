@@ -1,10 +1,12 @@
 package servent.message;
 
+import app.model.NodeInfo;
+
 import java.io.Serializable;
 
 public interface Message<T> extends Serializable {
-    Integer getSenderId();
-    Integer getReceiverId();
+    NodeInfo getSenderInfo();
+    NodeInfo getReceiverInfo();
     MessageType getMessageType();
     T getMessageContent();
     void setMessageContent(T content);

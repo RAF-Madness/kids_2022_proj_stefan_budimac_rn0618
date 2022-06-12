@@ -1,7 +1,6 @@
 package servent.message.util;
 
 import app.AppConfig;
-import app.model.NodeInfo;
 import servent.message.BasicMessage;
 import servent.message.Message;
 
@@ -28,8 +27,8 @@ public class MessageUtil {
         return clientMessage;
     }
 
-    public static void sendMessage(Message message, NodeInfo receiverInfo) {
-        Thread delayedSender = new Thread(new DelayedMessageSender(message, receiverInfo));
+    public static void sendMessage(Message message) {
+        Thread delayedSender = new Thread(new DelayedMessageSender(message));
         delayedSender.start();
     }
 }

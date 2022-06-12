@@ -4,7 +4,7 @@ import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class SystemKnockMessage extends BasicMessage<NodeInfo> {
+public class SystemKnockMessage extends BasicMessage<Object> {
     @Serial
     private static final long serialVersionUID = 33233211441132256L;
 
@@ -12,7 +12,7 @@ public class SystemKnockMessage extends BasicMessage<NodeInfo> {
         this.setMessageType(MessageType.SYSTEM_KNOCK);
     }
 
-    public SystemKnockMessage(Integer senderId, Integer receiverId) {
-        super(MessageType.SYSTEM_KNOCK, senderId, receiverId);
+    public SystemKnockMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
+        super(MessageType.SYSTEM_KNOCK, senderInfo, receiverInfo);
     }
 }

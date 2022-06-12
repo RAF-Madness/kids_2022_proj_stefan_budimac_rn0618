@@ -1,15 +1,13 @@
 package servent.handler;
 
 import app.AppConfig;
-import app.model.KnockAnswer;
 import app.model.NodeInfo;
-import app.model.NodeInfoId;
+import app.model.WelcomeContent;
 import servent.message.ConnectionRequestMessage;
 import servent.message.Message;
 import servent.message.util.MessageUtil;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.Map;
 
 public class WelcomeHandler implements MessageHandler {
     private Message clientMessage;
@@ -20,19 +18,17 @@ public class WelcomeHandler implements MessageHandler {
 
     @Override
     public void run() {
-        KnockAnswer knockAnswer = (KnockAnswer) clientMessage.getMessageContent();
-        AppConfig.info.setWorkerId(knockAnswer.getNewId());
-        AppConfig.state = knockAnswer.getState();
+        WelcomeContent welcomeContent = (WelcomeContent) clientMessage.getMessageContent();
+        AppConfig.info.setWorkerId(welcomeContent.getNewId());
+        AppConfig.state.getNodes().put(AppConfig.info.getWorkerId(), AppConfig.info.getNodeInfo());
+        for (Map.Entry<Integer, NodeInfo> entry : welcomeContent.getState().getNodes().entrySet()) {
+            AppConfig.state.getNodes().merge(entry.getKey(), entry.getValue(), (nodeInfo, nodeInfo2) -> nodeInfo2);
+        }
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.setPrevious(knockAnswer.getPredecessorInfo());
+            AppConfig.state.setPrevious(clientMessage.getSenderInfo());
         }
-        Message connectionRequestMessage = new ConnectionRequestMessage(AppConfig.info.getWorkerId(), 0);
-        try {
-            NodeInfo newNodeInfo = new NodeInfo(AppConfig.info.getPort(), InetAddress.getLocalHost().getHostAddress());
-            connectionRequestMessage.setMessageContent(newNodeInfo);
-            MessageUtil.sendMessage(connectionRequestMessage, AppConfig.state.getFirstNode());
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        Message connectionRequestMessage = new ConnectionRequestMessage(AppConfig.info.getNodeInfo(), AppConfig.state.getFirstNode());
+        connectionRequestMessage.setMessageContent(welcomeContent.getNewId());
+        MessageUtil.sendMessage(connectionRequestMessage);
     }
 }

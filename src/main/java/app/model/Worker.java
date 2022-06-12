@@ -82,7 +82,7 @@ public class Worker implements Serializable {
         return workerId;
     }
 
-    public void setWorkerId(Integer id) {
+    public void setWorkerId(Integer workerId) {
         this.workerId = workerId;
     }
 

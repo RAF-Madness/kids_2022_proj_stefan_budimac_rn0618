@@ -6,9 +6,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChaosState {
-    private Map<Integer, NodeInfo> nodes = new ConcurrentHashMap<>();
+    private Map<Integer, NodeInfo> nodes;
     private NodeInfo previous;
     private NodeInfo next;
+
+    public ChaosState() {
+        nodes = new ConcurrentHashMap<>();
+    }
 
     public NodeInfo getPrevious() {
         return previous;

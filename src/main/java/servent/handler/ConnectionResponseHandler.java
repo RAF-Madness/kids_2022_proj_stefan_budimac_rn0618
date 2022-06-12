@@ -18,17 +18,19 @@ public class ConnectionResponseHandler implements MessageHandler {
 
     @Override
     public void run() {
-        NodeInfo firstNode = (NodeInfo) clientMessage.getMessageContent();
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.setNext(firstNode);
+            AppConfig.state.setNext(clientMessage.getSenderInfo());
         }
         for (Map.Entry<Integer, NodeInfo> entry : AppConfig.state.getNodes().entrySet()) {
-            Message enteredMessage = new EnterMessage(AppConfig.info.getWorkerId(), entry.getKey());
-            enteredMessage.setMessageContent(AppConfig.info.getNodeInfo());
-            MessageUtil.sendMessage(enteredMessage, entry.getValue());
+            if (entry.getKey().equals(AppConfig.info.getWorkerId())) {
+                continue;
+            }
+            Message enterMessage = new EnterMessage(AppConfig.info.getNodeInfo(), entry.getValue());
+            enterMessage.setMessageContent(clientMessage.getMessageContent());
+            MessageUtil.sendMessage(enterMessage);
         }
-        Message joinMessage = new JoinMessage(clientMessage.getReceiverId(), -1);
-        joinMessage.setMessageContent(AppConfig.info.getNodeInfo());
-        MessageUtil.sendMessage(joinMessage, new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress()));
+        Message joinMessage = new JoinMessage(AppConfig.info.getNodeInfo(), new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress()));
+        joinMessage.setMessageContent(AppConfig.info.getWorkerId());
+        MessageUtil.sendMessage(joinMessage);
     }
 }

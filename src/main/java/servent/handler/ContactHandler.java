@@ -1,7 +1,8 @@
 package servent.handler;
 
 import app.AppConfig;
-import app.model.FirstNodeInfo;
+import app.ChaosState;
+import app.model.ContactContent;
 import app.model.NodeInfo;
 import app.model.NodeInfoId;
 import servent.message.JoinMessage;
@@ -18,21 +19,23 @@ public class ContactHandler implements MessageHandler {
 
     @Override
     public void run() {
-        FirstNodeInfo messageContent = (FirstNodeInfo) clientMessage.getMessageContent();
+        ContactContent messageContent = (ContactContent) clientMessage.getMessageContent();
         if (messageContent.getFirst()) {
             int newId;
             synchronized (AppConfig.idLock) {
-                newId = AppConfig.WORKER_ID++;
+                newId = 0;
+                System.out.println("EVO GA ID ALOOOOOO " + newId);
             }
             AppConfig.info.setWorkerId(newId);
-            Message joinMessage = new JoinMessage(newId, -1);
-            joinMessage.setMessageContent(messageContent.getNodeInfo());
-            MessageUtil.sendMessage(joinMessage, new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress()));
+            AppConfig.state = new ChaosState();
+            AppConfig.state.getNodes().put(AppConfig.info.getWorkerId(), AppConfig.info.getNodeInfo());
+            Message joinMessage = new JoinMessage(clientMessage.getReceiverInfo(), new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress()));
+            joinMessage.setMessageContent(newId);
+            MessageUtil.sendMessage(joinMessage);
         } else {
-            NodeInfoId contactInfo = (NodeInfoId) clientMessage.getMessageContent();
-            Message systemKnockMessage = new SystemKnockMessage(-2, contactInfo.getNodeId());
-            systemKnockMessage.setMessageContent(contactInfo.getNodeInfo());
-            MessageUtil.sendMessage(systemKnockMessage, AppConfig.state.getNodes().get(contactInfo.getNodeId()));
+            Message systemKnockMessage = new SystemKnockMessage(AppConfig.info.getNodeInfo(), messageContent.getFirstNodeInfo().getNodeInfo());
+            AppConfig.state = new ChaosState();
+            MessageUtil.sendMessage(systemKnockMessage);
         }
     }
 }
