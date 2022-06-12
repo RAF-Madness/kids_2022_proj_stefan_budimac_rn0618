@@ -1,10 +1,11 @@
 package app.model;
 
+
 import java.io.Serializable;
 
 public class BootstrapInfo implements Serializable {
-    private int port;
-    private String ipAddress;
+    private Integer port;
+    private transient String ipAddress;
 
     public BootstrapInfo() {}
 

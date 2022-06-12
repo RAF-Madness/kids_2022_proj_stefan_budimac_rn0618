@@ -2,7 +2,8 @@ package app;
 
 import app.model.BootstrapInfo;
 import app.model.Worker;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,8 +35,8 @@ public class AppConfig {
     public static void readConfig(int workerNumber) {
         try {
             String json = new String(Files.readAllBytes(Paths.get("src/main/resources/chaos/workers/worker_" + workerNumber + "/config.json")));
-            ObjectMapper mapper = new ObjectMapper();
-            info = mapper.readValue(json, Worker.class);
+            Gson gson = new GsonBuilder().create();
+            info = gson.fromJson(json, Worker.class);
             BOOTSTRAP = new BootstrapInfo(info.getBootstrapPort(), info.getBootstrapIpAddress());
         } catch (IOException e) {
             timestampedErrorPrint("Couldn't read the config file. Exiting...");

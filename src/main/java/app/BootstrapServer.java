@@ -4,16 +4,16 @@ import app.model.BootstrapInfo;
 import app.model.FirstNodeInfo;
 import app.model.NodeInfo;
 import app.model.NodeInfoId;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import servent.message.ContactMessage;
-import servent.message.Message;
-import servent.message.MessageType;
-import servent.message.RejectMessage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import servent.message.*;
 import servent.message.util.MessageUtil;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -64,7 +64,7 @@ public class BootstrapServer {
             try {
                 Socket newWorkerSocket = listenerScoket.accept();
                 workerMessage = MessageUtil.readMessage(newWorkerSocket);
-                if (workerMessage.getMessageType().equals(MessageType.HAIL)) {
+                if (workerMessage instanceof HailMessage) {
                     NodeInfo workerInfo = (NodeInfo) workerMessage.getMessageContent();
                     System.out.println("Got " + workerInfo.getPort() + ".");
                     Message contactMessage;
@@ -87,11 +87,13 @@ public class BootstrapServer {
                 } else if (workerMessage.getMessageType().equals(MessageType.LEAVE)) {
 
                 }
+            } catch (SocketTimeoutException ignored) {
+
             } catch (IOException e) {
-                assert workerMessage != null;
-                Message rejectMessage = new RejectMessage(-1, -2);
-                MessageUtil.sendMessage(rejectMessage, receiverInfo);
                 e.printStackTrace();
+                //assert workerMessage != null;
+                //Message rejectMessage = new RejectMessage(-1, -2);
+                //MessageUtil.sendMessage(rejectMessage, receiverInfo);
             }
         }
     }
@@ -100,8 +102,9 @@ public class BootstrapServer {
         String json;
         try {
             json = new String(Files.readAllBytes(Paths.get("src/main/resources/chaos/bootstrap_config.json")));
-            ObjectMapper mapper = new ObjectMapper();
-            bootstrapInfo = mapper.readValue(json, BootstrapInfo.class);
+            Gson gson = new GsonBuilder().create();
+            bootstrapInfo = gson.fromJson(json, BootstrapInfo.class);
+            bootstrapInfo.setIpAddress(InetAddress.getLocalHost().getHostAddress());
         } catch (IOException e) {
             e.printStackTrace();
         }

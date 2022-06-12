@@ -1,7 +1,5 @@
 package app.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.net.InetAddress;
@@ -18,10 +16,8 @@ public class Worker implements Serializable {
     private Integer weakLimit;
     private Integer strongLimit;
     private List<Job> jobs;
-    @JsonIgnore
-    private Integer workerId;
-    @JsonIgnore
-    private String fractalId;
+    private transient Integer workerId;
+    private transient String fractalId;
 
     public Worker() {}
 

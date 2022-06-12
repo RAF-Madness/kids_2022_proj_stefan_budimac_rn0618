@@ -4,8 +4,8 @@ import app.AppConfig;
 import app.model.NodeInfo;
 import servent.message.Message;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class DelayedMessageSender implements Runnable {
@@ -29,8 +29,8 @@ public class DelayedMessageSender implements Runnable {
         }
         try {
             Socket sendSocket = new Socket(receiverInfo.getIpAddress(), receiverInfo.getPort());
-            ObjectOutputStream outputStream = new ObjectOutputStream(sendSocket.getOutputStream());
-            outputStream.writeObject(messageToSend.toJson());
+            DataOutputStream outputStream = new DataOutputStream(sendSocket.getOutputStream());
+            outputStream.writeUTF(messageToSend.toJson());
             outputStream.flush();
             sendSocket.close();
         } catch (IOException e) {

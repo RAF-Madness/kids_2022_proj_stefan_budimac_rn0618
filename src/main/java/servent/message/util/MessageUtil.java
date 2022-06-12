@@ -2,11 +2,11 @@ package servent.message.util;
 
 import app.AppConfig;
 import app.model.NodeInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import servent.message.BasicMessage;
 import servent.message.Message;
 
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.Socket;
 
 public class MessageUtil {
@@ -15,15 +15,12 @@ public class MessageUtil {
     public static Message readMessage(Socket socket) {
         Message clientMessage = null;
         try {
-            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-            String json = (String) inputStream.readObject();
-            ObjectMapper mapper = new ObjectMapper();
-            clientMessage = mapper.readValue(json, Message.class);
+            DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+            String json = inputStream.readUTF();
+            clientMessage = BasicMessage.fromJson(json);
             socket.close();
         } catch (IOException e) {
             AppConfig.timestampedErrorPrint("Error while reading socket on " + socket.getInetAddress() + ":" + socket.getPort());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         if (MESSAGE_UTIL_PRINTING) {
             AppConfig.timestampedStandardPrint("Got message " + clientMessage);

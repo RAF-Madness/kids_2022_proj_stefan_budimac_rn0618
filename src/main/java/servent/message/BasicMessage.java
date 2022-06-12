@@ -1,30 +1,33 @@
 package servent.message;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import servent.message.util.MessageDeserializer;
 
 import java.io.Serial;
-import java.util.List;
 
-public abstract class BasicMessage implements Message {
+public abstract class BasicMessage<T> implements Message<T> {
     @Serial
     private static final long serialVersionUID = 33333411141121156L;
 
-    private MessageType type;
-    private Object content;
+    protected static MessageDeserializer messageDeserializer = new MessageDeserializer("messageType");
+
+    private MessageType messageType;
+    private T messageContent;
     private Integer senderId;
     private Integer receiverId;
 
-    public BasicMessage(MessageType type, Integer senderId, Integer receiverId) {
-        this.type = type;
+    public BasicMessage() {}
+
+    public BasicMessage(MessageType messageType, Integer senderId, Integer receiverId) {
+        this.messageType = messageType;
         this.senderId = senderId;
         this.receiverId = receiverId;
     }
 
-    public BasicMessage(MessageType type, List<Object> content, Integer senderId, Integer receiverId) {
-        this.type = type;
-        this.content = content;
+    public BasicMessage(MessageType messageType, T messageContent, Integer senderId, Integer receiverId) {
+        this.messageType = messageType;
+        this.messageContent = messageContent;
         this.senderId = senderId;
         this.receiverId = receiverId;
     }
@@ -49,27 +52,30 @@ public abstract class BasicMessage implements Message {
 
     @Override
     public MessageType getMessageType() {
-        return type;
+        return messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
     }
 
     @Override
-    public Object getMessageContent() {
-        return content;
+    public T getMessageContent() {
+        return messageContent;
     }
 
     @Override
-    public void setMessageContent(Object content) {
-        this.content = content;
+    public void setMessageContent(T messageContent) {
+        this.messageContent = messageContent;
     }
 
     @Override
     public String toJson() {
-        ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        try {
-            return objectWriter.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return null;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(this);
+    }
+
+    public static Message<?> fromJson(String json) {
+        return messageDeserializer.deserialize(json);
     }
 }

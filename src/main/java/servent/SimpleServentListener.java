@@ -9,6 +9,7 @@ import servent.message.util.MessageUtil;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -60,6 +61,8 @@ public class SimpleServentListener implements Runnable, Cancellable {
                     }
                 }
                 handlerThreadPool.submit(messageHandler);
+            } catch (SocketTimeoutException ignored) {
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
