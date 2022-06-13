@@ -10,10 +10,10 @@ public class ContactMessage extends BasicMessage<ContactContent> {
     private static final long serialVersionUID = 1441441441223355555L;
 
     public ContactMessage() {
-        this.setMessageType(MessageType.CONTACT);
+        this.setType(MessageType.CONTACT);
     }
 
-    public ContactMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
-        super(MessageType.CONTACT, senderInfo, receiverInfo);
+    public ContactMessage(NodeInfo sender, NodeInfo receiver) {
+        super(MessageType.CONTACT, sender, receiver);
     }
 }

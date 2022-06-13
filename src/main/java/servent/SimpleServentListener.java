@@ -37,7 +37,7 @@ public class SimpleServentListener implements Runnable, Cancellable {
                 Socket clientSocket = listenerSocket.accept();
                 clientMessage = MessageUtil.readMessage(clientSocket);
                 MessageHandler messageHandler = new NullHandler(clientMessage);
-                switch (clientMessage.getMessageType()) {
+                switch (clientMessage.getType()) {
                     case CONTACT -> {
                         messageHandler = new ContactHandler(clientMessage);
                     }

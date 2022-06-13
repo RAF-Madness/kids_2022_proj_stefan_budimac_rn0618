@@ -64,27 +64,24 @@ public class BootstrapServer {
                     Socket newWorkerSocket = listenerScoket.accept();
                     workerMessage = MessageUtil.readMessage(newWorkerSocket);
                     if (workerMessage instanceof HailMessage) {
-                        NodeInfo workerInfo = workerMessage.getSenderInfo();
+                        NodeInfo workerInfo = workerMessage.getSender();
                         System.out.println("Got " + workerInfo.getPort() + ".");
                         Message contactMessage;
                         if (activeWorkers.size() == 0) {
-                            contactMessage = new ContactMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress), workerMessage.getSenderInfo());
-                            contactMessage.setMessageContent(new ContactContent(Boolean.TRUE, new NodeInfoId(-1, new NodeInfo())));
+                            contactMessage = new ContactMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress, -2, "", ""), workerMessage.getSender());
+                            contactMessage.setPayload(new ContactContent(Boolean.TRUE, new NodeInfoId(-1, new NodeInfo())));
                             MessageUtil.sendMessage(contactMessage);
                         } else {
-                            contactMessage = new ContactMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress), workerMessage.getSenderInfo());
-                            contactMessage.setMessageContent(new ContactContent(Boolean.FALSE, new NodeInfoId(getHighestId(), getHighestIdInfo())));
-                            System.out.println(getHighestIdInfo().getPort());
-                            System.out.println(getHighestIdInfo().getIpAddress());
-                            System.out.println(getHighestId());
+                            contactMessage = new ContactMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress, -2, "", ""), workerMessage.getSender());
+                            contactMessage.setPayload(new ContactContent(Boolean.FALSE, new NodeInfoId(getHighestId(), getHighestIdInfo())));
                             MessageUtil.sendMessage(contactMessage);
                         }
                         newWorkerSocket.close();
                     } else if (workerMessage instanceof JoinMessage) {
-                        Integer joinedNodeId = (Integer) workerMessage.getMessageContent();
-                        activeWorkers.put(joinedNodeId, workerMessage.getSenderInfo());
+                        Integer joinedNodeId = (Integer) workerMessage.getPayload();
+                        activeWorkers.put(joinedNodeId, workerMessage.getSender());
                         System.out.println("Worker successfully added to the system!");
-                    } else if (workerMessage.getMessageType().equals(MessageType.LEAVE)) {
+                    } else if (workerMessage.getType().equals(MessageType.LEAVE)) {
 
                     }
                 } catch (SocketTimeoutException ignored) {

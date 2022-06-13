@@ -4,7 +4,6 @@ import app.AppConfig;
 import app.ChaosState;
 import app.model.ContactContent;
 import app.model.NodeInfo;
-import app.model.NodeInfoId;
 import servent.message.JoinMessage;
 import servent.message.Message;
 import servent.message.SystemKnockMessage;
@@ -19,18 +18,17 @@ public class ContactHandler implements MessageHandler {
 
     @Override
     public void run() {
-        ContactContent messageContent = (ContactContent) clientMessage.getMessageContent();
+        ContactContent messageContent = (ContactContent) clientMessage.getPayload();
         if (messageContent.getFirst()) {
             int newId;
             synchronized (AppConfig.idLock) {
                 newId = 0;
-                System.out.println("EVO GA ID ALOOOOOO " + newId);
             }
-            AppConfig.info.setWorkerId(newId);
+            AppConfig.info.setNodeId(newId);
             AppConfig.state = new ChaosState();
-            AppConfig.state.getNodes().put(AppConfig.info.getWorkerId(), AppConfig.info.getNodeInfo());
-            Message joinMessage = new JoinMessage(clientMessage.getReceiverInfo(), new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress()));
-            joinMessage.setMessageContent(newId);
+            AppConfig.state.getNodes().put(AppConfig.info.getNodeId(), AppConfig.info.getNodeInfo());
+            Message joinMessage = new JoinMessage(clientMessage.getReceiver(), new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress(), -1, "", ""));
+            joinMessage.setPayload(newId);
             MessageUtil.sendMessage(joinMessage);
         } else {
             Message systemKnockMessage = new SystemKnockMessage(AppConfig.info.getNodeInfo(), messageContent.getFirstNodeInfo().getNodeInfo());

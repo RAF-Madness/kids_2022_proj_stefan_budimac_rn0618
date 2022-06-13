@@ -16,7 +16,7 @@ public class Worker implements Serializable {
     private Integer weakLimit;
     private Integer strongLimit;
     private List<Job> jobs;
-    private transient Integer workerId;
+    private transient Integer nodeId;
     private transient String fractalId;
 
     public Worker() {}
@@ -78,17 +78,17 @@ public class Worker implements Serializable {
         this.jobs = jobs;
     }
 
-    public Integer getWorkerId() {
-        return workerId;
+    public Integer getNodeId() {
+        return nodeId;
     }
 
-    public void setWorkerId(Integer workerId) {
-        this.workerId = workerId;
+    public void setNodeId(Integer nodeId) {
+        this.nodeId = nodeId;
     }
 
     public NodeInfo getNodeInfo() {
         try {
-            return new NodeInfo(port, InetAddress.getLocalHost().getHostAddress());
+            return new NodeInfo(port, InetAddress.getLocalHost().getHostAddress(), nodeId, fractalId, "");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

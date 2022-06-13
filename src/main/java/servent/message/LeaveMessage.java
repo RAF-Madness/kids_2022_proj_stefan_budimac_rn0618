@@ -9,10 +9,10 @@ public class LeaveMessage extends BasicMessage<Object> {
     private static final long serialVersionUID = 1488987547211223633L;
 
     public LeaveMessage() {
-        this.setMessageType(MessageType.LEAVE);
+        this.setType(MessageType.LEAVE);
     }
 
-    public LeaveMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
-        super(MessageType.LEAVE, senderInfo, receiverInfo);
+    public LeaveMessage(NodeInfo senedr, NodeInfo receiver) {
+        super(MessageType.LEAVE, senedr, receiver);
     }
 }

@@ -17,14 +17,14 @@ public class SystemKnockHandler implements MessageHandler {
     public void run() {
         int newId;
         synchronized (AppConfig.idLock) {
-            newId = AppConfig.info.getWorkerId() + 1;
+            newId = AppConfig.info.getNodeId() + 1;
         }
-        Message welcomeMessage = new WelcomeMessage(clientMessage.getReceiverInfo(), clientMessage.getSenderInfo());
+        Message welcomeMessage = new WelcomeMessage(clientMessage.getReceiver(), clientMessage.getSender());
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.setNext(clientMessage.getSenderInfo());
+            AppConfig.state.setNext(clientMessage.getSender());
         }
         WelcomeContent welcomeContent = new WelcomeContent(newId, AppConfig.state);
-        welcomeMessage.setMessageContent(welcomeContent);
+        welcomeMessage.setPayload(welcomeContent);
         MessageUtil.sendMessage(welcomeMessage);
     }
 }

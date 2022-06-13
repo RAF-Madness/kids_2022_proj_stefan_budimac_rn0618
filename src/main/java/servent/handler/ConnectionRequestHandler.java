@@ -14,11 +14,11 @@ public class ConnectionRequestHandler implements MessageHandler {
 
     @Override
     public void run() {
-        Message connectionResponseMessage = new ConnectionResponseMessage(AppConfig.info.getNodeInfo(), clientMessage.getSenderInfo());
+        Message connectionResponseMessage = new ConnectionResponseMessage(AppConfig.info.getNodeInfo(), clientMessage.getSender());
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.setPrevious(clientMessage.getSenderInfo());
+            AppConfig.state.setPrevious(clientMessage.getSender());
         }
-        connectionResponseMessage.setMessageContent(clientMessage.getMessageContent());
+        connectionResponseMessage.setPayload(clientMessage.getPayload());
         MessageUtil.sendMessage(connectionResponseMessage);
     }
 }

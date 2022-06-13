@@ -10,10 +10,10 @@ public class WelcomeMessage extends BasicMessage<WelcomeContent> {
     private static final long serialVersionUID = 33388778877887788L;
 
     public WelcomeMessage() {
-        this.setMessageType(MessageType.WELCOME);
+        this.setType(MessageType.WELCOME);
     }
 
-    public WelcomeMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
-        super(MessageType.WELCOME, senderInfo, receiverInfo);
+    public WelcomeMessage(NodeInfo sender, NodeInfo receiver) {
+        super(MessageType.WELCOME, sender, receiver);
     }
 }

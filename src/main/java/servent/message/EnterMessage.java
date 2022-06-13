@@ -9,10 +9,10 @@ public class EnterMessage extends BasicMessage<Integer> {
     private static final long serialVersionUID = 190933234599009L;
 
     public EnterMessage() {
-        this.setMessageType(MessageType.ENTER);
+        this.setType(MessageType.ENTER);
     }
 
-    public EnterMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
-        super(MessageType.ENTER, senderInfo, receiverInfo);
+    public EnterMessage(NodeInfo sender, NodeInfo receiver) {
+        super(MessageType.ENTER, sender, receiver);
     }
 }

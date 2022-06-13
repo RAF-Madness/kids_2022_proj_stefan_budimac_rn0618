@@ -9,10 +9,10 @@ public class HailMessage extends BasicMessage<Object> {
     private static final long serialVersionUID = 1234123443214321555L;
 
     public HailMessage() {
-        this.setMessageType(MessageType.HAIL);
+        this.setType(MessageType.HAIL);
     }
 
-    public HailMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
-        super(MessageType.HAIL, senderInfo, receiverInfo);
+    public HailMessage(NodeInfo sender, NodeInfo receiver) {
+        super(MessageType.HAIL, sender, receiver);
     }
 }

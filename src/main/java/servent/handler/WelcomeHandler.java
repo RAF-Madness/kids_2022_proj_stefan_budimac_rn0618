@@ -18,17 +18,17 @@ public class WelcomeHandler implements MessageHandler {
 
     @Override
     public void run() {
-        WelcomeContent welcomeContent = (WelcomeContent) clientMessage.getMessageContent();
-        AppConfig.info.setWorkerId(welcomeContent.getNewId());
-        AppConfig.state.getNodes().put(AppConfig.info.getWorkerId(), AppConfig.info.getNodeInfo());
+        WelcomeContent welcomeContent = (WelcomeContent) clientMessage.getPayload();
+        AppConfig.info.setNodeId(welcomeContent.getNewId());
+        AppConfig.state.getNodes().put(AppConfig.info.getNodeId(), AppConfig.info.getNodeInfo());
         for (Map.Entry<Integer, NodeInfo> entry : welcomeContent.getState().getNodes().entrySet()) {
             AppConfig.state.getNodes().merge(entry.getKey(), entry.getValue(), (nodeInfo, nodeInfo2) -> nodeInfo2);
         }
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.setPrevious(clientMessage.getSenderInfo());
+            AppConfig.state.setPrevious(clientMessage.getSender());
         }
         Message connectionRequestMessage = new ConnectionRequestMessage(AppConfig.info.getNodeInfo(), AppConfig.state.getFirstNode());
-        connectionRequestMessage.setMessageContent(welcomeContent.getNewId());
+        connectionRequestMessage.setPayload(welcomeContent.getNewId());
         MessageUtil.sendMessage(connectionRequestMessage);
     }
 }

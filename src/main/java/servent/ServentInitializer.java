@@ -18,8 +18,8 @@ public class ServentInitializer implements Runnable {
     @Override
     public void run() {
         try {
-            NodeInfo senderInfo = new NodeInfo(AppConfig.info.getPort(), InetAddress.getLocalHost().getHostAddress());
-            NodeInfo receiverInfo = new NodeInfo(AppConfig.info.getBootstrapPort(), AppConfig.info.getBootstrapIpAddress());
+            NodeInfo senderInfo = new NodeInfo(AppConfig.info.getPort(), InetAddress.getLocalHost().getHostAddress(), -2, "", "");
+            NodeInfo receiverInfo = new NodeInfo(AppConfig.info.getBootstrapPort(), AppConfig.info.getBootstrapIpAddress(), -1, "", "");
             Message hailMessage = new HailMessage(senderInfo, receiverInfo);
             MessageUtil.sendMessage(hailMessage);
         } catch (IOException e) {

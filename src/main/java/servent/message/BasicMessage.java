@@ -6,68 +6,82 @@ import com.google.gson.GsonBuilder;
 import servent.message.util.MessageDeserializer;
 
 import java.io.Serial;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class BasicMessage<T> implements Message<T> {
     @Serial
     private static final long serialVersionUID = 33333411141121156L;
 
-    protected static MessageDeserializer messageDeserializer = new MessageDeserializer("messageType");
+    protected static MessageDeserializer messageDeserializer = new MessageDeserializer("type");
 
-    private MessageType messageType;
-    private T messageContent;
-    private NodeInfo senderInfo;
-    private NodeInfo receiverInfo;
+    private MessageType type;
+    private T payload;
+    private NodeInfo sender;
+    private NodeInfo receiver;
+    private List<Integer> routes;
 
     public BasicMessage() {}
 
-    public BasicMessage(MessageType messageType, NodeInfo senderInfo, NodeInfo receiverInfo) {
-        this.messageType = messageType;
-        this.senderInfo = senderInfo;
-        this.receiverInfo = receiverInfo;
+    public BasicMessage(MessageType type, NodeInfo sender, NodeInfo receiver) {
+        this.type = type;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.routes = new CopyOnWriteArrayList<>();
     }
 
-    public BasicMessage(MessageType messageType, T messageContent, NodeInfo senderInfo, NodeInfo receiverInfo) {
-        this.messageType = messageType;
-        this.messageContent = messageContent;
-        this.senderInfo = senderInfo;
-        this.receiverInfo = receiverInfo;
-    }
-
-    @Override
-    public NodeInfo getSenderInfo() {
-        return senderInfo;
-    }
-
-    public void setSenderInfo(NodeInfo senderInfo) {
-        this.senderInfo = senderInfo;
+    public BasicMessage(MessageType type, T payload, NodeInfo sender, NodeInfo receiver) {
+        this.type = type;
+        this.payload = payload;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.routes = new CopyOnWriteArrayList<>();
     }
 
     @Override
-    public NodeInfo getReceiverInfo() {
-        return receiverInfo;
+    public NodeInfo getSender() {
+        return sender;
     }
 
-    public void setReceiverInfo(NodeInfo receiverInfo) {
-        this.receiverInfo = receiverInfo;
-    }
-
-    @Override
-    public MessageType getMessageType() {
-        return messageType;
-    }
-
-    public void setMessageType(MessageType messageType) {
-        this.messageType = messageType;
+    public void setSender(NodeInfo sender) {
+        this.sender = sender;
     }
 
     @Override
-    public T getMessageContent() {
-        return messageContent;
+    public NodeInfo getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(NodeInfo receiver) {
+        this.receiver = receiver;
     }
 
     @Override
-    public void setMessageContent(T messageContent) {
-        this.messageContent = messageContent;
+    public MessageType getType() {
+        return type;
+    }
+
+    public void setType(MessageType type) {
+        this.type = type;
+    }
+
+    @Override
+    public T getPayload() {
+        return payload;
+    }
+
+    @Override
+    public void setPayload(T payload) {
+        this.payload = payload;
+    }
+
+    @Override
+    public List<Integer> getRoutes() {
+        return routes;
+    }
+
+    public void setRoutes(List<Integer> routes) {
+        this.routes = routes;
     }
 
     @Override

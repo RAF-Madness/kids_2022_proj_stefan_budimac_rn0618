@@ -9,10 +9,10 @@ public class PurgeMessage extends BasicMessage<Object> {
     private static final long serialVersionUID = 8855113311255664422L;
 
     public PurgeMessage() {
-        this.setMessageType(MessageType.PURGE);
+        this.setType(MessageType.PURGE);
     }
 
-    public PurgeMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
-        super(MessageType.PURGE, senderInfo, receiverInfo);
+    public PurgeMessage(NodeInfo sender, NodeInfo receiver) {
+        super(MessageType.PURGE, sender, receiver);
     }
 }

@@ -9,10 +9,10 @@ public class ConnectionResponseMessage extends BasicMessage<Integer> {
     private static final long serialVersionUID = 74589488599604310L;
 
     public ConnectionResponseMessage() {
-        this.setMessageType(MessageType.CONNECTION_RESPONSE);
+        this.setType(MessageType.CONNECTION_RESPONSE);
     }
 
-    public ConnectionResponseMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
-        super(MessageType.CONNECTION_RESPONSE, senderInfo, receiverInfo);
+    public ConnectionResponseMessage(NodeInfo sender, NodeInfo receiver) {
+        super(MessageType.CONNECTION_RESPONSE, sender, receiver);
     }
 }

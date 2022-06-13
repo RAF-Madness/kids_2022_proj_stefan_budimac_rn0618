@@ -9,10 +9,10 @@ public class RejectMessage extends BasicMessage<Object> {
     private static final long serialVersionUID = 999111111999000555L;
 
     public RejectMessage() {
-        this.setMessageType(MessageType.REJECT);
+        this.setType(MessageType.REJECT);
     }
 
-    public RejectMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
-        super(MessageType.REJECT, senderInfo, receiverInfo);
+    public RejectMessage(NodeInfo sender, NodeInfo receiver) {
+        super(MessageType.REJECT, sender, receiver);
     }
 }

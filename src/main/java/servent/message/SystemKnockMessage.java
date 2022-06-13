@@ -9,10 +9,10 @@ public class SystemKnockMessage extends BasicMessage<Object> {
     private static final long serialVersionUID = 33233211441132256L;
 
     public SystemKnockMessage() {
-        this.setMessageType(MessageType.SYSTEM_KNOCK);
+        this.setType(MessageType.SYSTEM_KNOCK);
     }
 
-    public SystemKnockMessage(NodeInfo senderInfo, NodeInfo receiverInfo) {
-        super(MessageType.SYSTEM_KNOCK, senderInfo, receiverInfo);
+    public SystemKnockMessage(NodeInfo sender, NodeInfo receiver) {
+        super(MessageType.SYSTEM_KNOCK, sender, receiver);
     }
 }

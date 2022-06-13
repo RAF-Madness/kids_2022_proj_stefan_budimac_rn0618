@@ -19,18 +19,18 @@ public class ConnectionResponseHandler implements MessageHandler {
     @Override
     public void run() {
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.setNext(clientMessage.getSenderInfo());
+            AppConfig.state.setNext(clientMessage.getSender());
         }
         for (Map.Entry<Integer, NodeInfo> entry : AppConfig.state.getNodes().entrySet()) {
-            if (entry.getKey().equals(AppConfig.info.getWorkerId())) {
+            if (entry.getKey().equals(AppConfig.info.getNodeId())) {
                 continue;
             }
             Message enterMessage = new EnterMessage(AppConfig.info.getNodeInfo(), entry.getValue());
-            enterMessage.setMessageContent(clientMessage.getMessageContent());
+            enterMessage.setPayload(clientMessage.getPayload());
             MessageUtil.sendMessage(enterMessage);
         }
-        Message joinMessage = new JoinMessage(AppConfig.info.getNodeInfo(), new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress()));
-        joinMessage.setMessageContent(AppConfig.info.getWorkerId());
+        Message joinMessage = new JoinMessage(AppConfig.info.getNodeInfo(), new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress(), -1, "", ""));
+        joinMessage.setPayload(AppConfig.info.getNodeId());
         MessageUtil.sendMessage(joinMessage);
     }
 }
