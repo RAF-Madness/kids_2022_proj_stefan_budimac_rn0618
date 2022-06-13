@@ -57,7 +57,6 @@ public class BootstrapServer {
         }
 
         Message workerMessage = null;
-        NodeInfo receiverInfo = null;
         while (working) {
             synchronized (messageLock) {
                 try {
@@ -88,9 +87,9 @@ public class BootstrapServer {
 
                 } catch (IOException e) {
                     e.printStackTrace();
-                    //assert workerMessage != null;
-                    //Message rejectMessage = new RejectMessage(-1, -2);
-                    //MessageUtil.sendMessage(rejectMessage, receiverInfo);
+                    assert workerMessage != null;
+                    Message rejectMessage = new RejectMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress, -2, "", ""), workerMessage.getSender());
+                    MessageUtil.sendMessage(rejectMessage);
                 }
             }
         }

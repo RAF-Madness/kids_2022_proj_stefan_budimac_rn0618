@@ -1,6 +1,7 @@
 package app;
 
 import app.model.BootstrapInfo;
+import app.model.Job;
 import app.model.Worker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,6 +37,10 @@ public class AppConfig {
             String json = new String(Files.readAllBytes(Paths.get("src/main/resources/chaos/workers/worker_" + workerNumber + "/config.json")));
             Gson gson = new GsonBuilder().create();
             info = gson.fromJson(json, Worker.class);
+            AppConfig.state = new ChaosState();
+            for (Job job : info.getJobs()) {
+                AppConfig.state.getJobs().put(job.getName(), job);
+            }
             BOOTSTRAP = new BootstrapInfo(info.getBootstrapPort(), info.getBootstrapIpAddress());
         } catch (IOException e) {
             timestampedErrorPrint("Couldn't read the config file. Exiting...");

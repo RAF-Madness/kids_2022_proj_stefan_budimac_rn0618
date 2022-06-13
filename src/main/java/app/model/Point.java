@@ -12,6 +12,11 @@ public class Point implements Serializable {
 
     public Point() {}
 
+    public Point(Double x, Double y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public Double getX() {
         return x;
     }
@@ -25,11 +30,6 @@ public class Point implements Serializable {
     }
 
     public void setY(Double y) {
-        this.y = y;
-    }
-
-    public Point(Double x, Double y) {
-        this.x = x;
         this.y = y;
     }
 }

@@ -25,7 +25,6 @@ public class ContactHandler implements MessageHandler {
                 newId = 0;
             }
             AppConfig.info.setNodeId(newId);
-            AppConfig.state = new ChaosState();
             AppConfig.state.getNodes().put(AppConfig.info.getNodeId(), AppConfig.info.getNodeInfo());
             Message joinMessage = new JoinMessage(clientMessage.getReceiver(), new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress(), -1, "", ""));
             joinMessage.setPayload(newId);
