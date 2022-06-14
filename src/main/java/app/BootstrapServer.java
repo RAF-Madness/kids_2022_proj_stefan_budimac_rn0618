@@ -68,7 +68,7 @@ public class BootstrapServer {
                         Message contactMessage;
                         if (activeWorkers.size() == 0) {
                             contactMessage = new ContactMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress, -2, "", ""), workerMessage.getSender());
-                            NodeInfo payload = new NodeInfo(0, "", -1, "", "");
+                            NodeInfo payload = new NodeInfo(workerMessage.getSender().getPort(), workerMessage.getSender().getIpAddress(), -1, "", "");
                             contactMessage.setPayload(payload);
                             MessageUtil.sendMessage(contactMessage);
                         } else {
