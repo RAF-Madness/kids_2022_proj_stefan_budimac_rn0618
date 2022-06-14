@@ -11,6 +11,7 @@ public enum MessageType {
     ENTER,
     JOIN,
     LEAVE,
+    QUIT,
     PURGE,
     CLUSTER_KNOCK,
     CLUSTER_WELCOME,

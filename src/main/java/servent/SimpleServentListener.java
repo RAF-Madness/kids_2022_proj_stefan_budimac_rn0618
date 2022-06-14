@@ -59,6 +59,9 @@ public class SimpleServentListener implements Runnable, Cancellable {
                     case REJECT -> {
                         messageHandler = new RejectHandler();
                     }
+                    case QUIT -> {
+                        messageHandler = new QuitHandler(clientMessage);
+                    }
                 }
                 handlerThreadPool.submit(messageHandler);
             } catch (SocketTimeoutException ignored) {

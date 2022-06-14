@@ -80,8 +80,9 @@ public class BootstrapServer {
                         Integer joinedNodeId = (Integer) workerMessage.getPayload();
                         activeWorkers.put(joinedNodeId, workerMessage.getSender());
                         System.out.println("Worker successfully added to the system!");
-                    } else if (workerMessage.getType().equals(MessageType.LEAVE)) {
-
+                    } else if (workerMessage instanceof LeaveMessage) {
+                        activeWorkers.remove(workerMessage.getSender().getNodeId());
+                        System.out.println("Worker successfully removed from the system!");
                     }
                 } catch (SocketTimeoutException ignored) {
 

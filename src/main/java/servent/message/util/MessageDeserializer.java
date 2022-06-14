@@ -11,12 +11,21 @@ public class MessageDeserializer {
         adapterFactory = RuntimeTypeAdapterFactory.of(Message.class, messageTypeElement);
         adapterFactory.registerSubtype(HailMessage.class, "HAIL");
         adapterFactory.registerSubtype(ContactMessage.class, "CONTACT");
+        adapterFactory.registerSubtype(RejectMessage.class, "REJECT");
         adapterFactory.registerSubtype(SystemKnockMessage.class, "SYSTEM_KNOCK");
         adapterFactory.registerSubtype(WelcomeMessage.class, "WELCOME");
         adapterFactory.registerSubtype(ConnectionRequestMessage.class, "CONNECTION_REQUEST");
         adapterFactory.registerSubtype(ConnectionResponseMessage.class, "CONNECTION_RESPONSE");
         adapterFactory.registerSubtype(EnterMessage.class, "ENTER");
         adapterFactory.registerSubtype(JoinMessage.class, "JOIN");
+        adapterFactory.registerSubtype(LeaveMessage.class, "LEAVE");
+        adapterFactory.registerSubtype(QuitMessage.class, "QUIT");
+        adapterFactory.registerSubtype(PurgeMessage.class, "PURGE");
+        adapterFactory.registerSubtype(ClusterKnockMessage.class, "CLUSTER_KNOCK");
+        adapterFactory.registerSubtype(ClusterWelcomeMessage.class, "CLUSTER_WELCOME");
+        adapterFactory.registerSubtype(EnteredClusterMessage.class, "ENTERED_CLUSTER");
+        adapterFactory.registerSubtype(ClusterConnectionRequest.class, "CLUSTER_CONNECTION_REQUEST");
+        adapterFactory.registerSubtype(ClusterConnectionResponse.class, "CLUSTER_CONNECTION_RESPONSE");
     }
 
     public void registerMessageType(Class<? extends Message<?>> messageType, String messageTypeName) {
