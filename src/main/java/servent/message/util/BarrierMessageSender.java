@@ -6,6 +6,7 @@ import servent.message.Message;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -31,7 +32,7 @@ public class BarrierMessageSender implements Runnable {
         try {
             Socket sendSocket = new Socket(messageToSend.getReceiver().getIpAddress(), messageToSend.getReceiver().getPort());
             DataOutputStream outputStream = new DataOutputStream(sendSocket.getOutputStream());
-            outputStream.writeUTF(messageToSend.toJson());
+            outputStream.write(messageToSend.toJson().getBytes(StandardCharsets.UTF_8));
             outputStream.flush();
             sendSocket.close();
             barrier.await();

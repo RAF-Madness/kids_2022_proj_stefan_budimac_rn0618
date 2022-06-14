@@ -1,11 +1,10 @@
 package servent.message;
 
-import app.model.ContactContent;
 import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class ContactMessage extends BasicMessage<ContactContent> {
+public class ContactMessage extends BasicMessage<NodeInfo> {
     @Serial
     private static final long serialVersionUID = 1441441441223355555L;
 

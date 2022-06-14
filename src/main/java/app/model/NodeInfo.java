@@ -15,6 +15,10 @@ public class NodeInfo implements Serializable {
 
     public NodeInfo() {}
 
+    public NodeInfo(Integer nodeId) {
+        this.nodeId = nodeId;
+    }
+
     public NodeInfo(Integer port, String ipAddress, Integer nodeId, String fractalId, String jobName) {
         this.port = port;
         this.ipAddress = ipAddress;

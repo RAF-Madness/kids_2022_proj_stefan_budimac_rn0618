@@ -16,7 +16,7 @@ public class MessageUtil {
         Message clientMessage = null;
         try {
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-            String json = inputStream.readUTF();
+            String json = new String(inputStream.readAllBytes());
             clientMessage = BasicMessage.fromJson(json);
             socket.close();
         } catch (IOException e) {

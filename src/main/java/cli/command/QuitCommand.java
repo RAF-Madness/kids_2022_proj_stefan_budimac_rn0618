@@ -30,6 +30,7 @@ public class QuitCommand implements CLICommand {
     @Override
     public void execute(String args) {
         CyclicBarrier barrier = new CyclicBarrier(AppConfig.state.getNodes().size(), new ExitThread());
+        System.out.println(AppConfig.state.getNodes().entrySet());
         for (Map.Entry<Integer, NodeInfo> entry : AppConfig.state.getNodes().entrySet()) {
             if (entry.getKey().equals(AppConfig.info.getNodeId())) {
                 continue;

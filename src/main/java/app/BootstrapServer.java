@@ -68,11 +68,11 @@ public class BootstrapServer {
                         Message contactMessage;
                         if (activeWorkers.size() == 0) {
                             contactMessage = new ContactMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress, -2, "", ""), workerMessage.getSender());
-                            contactMessage.setPayload(new ContactContent(Boolean.TRUE, new NodeInfoId(-1, new NodeInfo())));
+                            contactMessage.setPayload(new NodeInfo(-1));
                             MessageUtil.sendMessage(contactMessage);
                         } else {
                             contactMessage = new ContactMessage(new NodeInfo(bootstrapPort, bootstrapIpAddress, -2, "", ""), workerMessage.getSender());
-                            contactMessage.setPayload(new ContactContent(Boolean.FALSE, new NodeInfoId(getHighestId(), getHighestIdInfo())));
+                            contactMessage.setPayload(getHighestIdInfo());
                             MessageUtil.sendMessage(contactMessage);
                         }
                         newWorkerSocket.close();

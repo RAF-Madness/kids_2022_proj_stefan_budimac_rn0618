@@ -6,6 +6,7 @@ import servent.message.Message;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class DelayedMessageSender implements Runnable {
     private Message messageToSend;
@@ -27,7 +28,7 @@ public class DelayedMessageSender implements Runnable {
         try {
             Socket sendSocket = new Socket(messageToSend.getReceiver().getIpAddress(), messageToSend.getReceiver().getPort());
             DataOutputStream outputStream = new DataOutputStream(sendSocket.getOutputStream());
-            outputStream.writeUTF(messageToSend.toJson());
+            outputStream.write(messageToSend.toJson().getBytes(StandardCharsets.UTF_8));
             outputStream.flush();
             sendSocket.close();
         } catch (IOException e) {

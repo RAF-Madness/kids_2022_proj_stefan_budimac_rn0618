@@ -2,7 +2,6 @@ package servent.handler;
 
 import app.AppConfig;
 import app.ChaosState;
-import app.model.ContactContent;
 import app.model.NodeInfo;
 import servent.message.JoinMessage;
 import servent.message.Message;
@@ -18,8 +17,8 @@ public class ContactHandler implements MessageHandler {
 
     @Override
     public void run() {
-        ContactContent messageContent = (ContactContent) clientMessage.getPayload();
-        if (messageContent.getFirst()) {
+        NodeInfo messageContent = (NodeInfo) clientMessage.getPayload();
+        if (messageContent.getNodeId().equals(-1)) {
             int newId;
             synchronized (AppConfig.idLock) {
                 newId = 0;
@@ -30,7 +29,7 @@ public class ContactHandler implements MessageHandler {
             joinMessage.setPayload(newId);
             MessageUtil.sendMessage(joinMessage);
         } else {
-            Message systemKnockMessage = new SystemKnockMessage(AppConfig.info.getNodeInfo(), messageContent.getFirstNodeInfo().getNodeInfo());
+            Message systemKnockMessage = new SystemKnockMessage(AppConfig.info.getNodeInfo(), messageContent);
             AppConfig.state = new ChaosState();
             MessageUtil.sendMessage(systemKnockMessage);
         }
