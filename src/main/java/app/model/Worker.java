@@ -18,6 +18,7 @@ public class Worker implements Serializable {
     private List<Job> jobs;
     private transient Integer nodeId;
     private transient String fractalId;
+    private transient NodeInfo nodeInfo;
 
     public Worker() {}
 
@@ -87,12 +88,11 @@ public class Worker implements Serializable {
     }
 
     public NodeInfo getNodeInfo() {
-        try {
-            return new NodeInfo(port, InetAddress.getLocalHost().getHostAddress(), nodeId, fractalId, "");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return nodeInfo;
+    }
+
+    public void setNodeInfo(NodeInfo nodeInfo) {
+        this.nodeInfo = nodeInfo;
     }
 
     public String getFractalId() {

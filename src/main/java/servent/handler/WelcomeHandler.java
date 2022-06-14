@@ -20,6 +20,7 @@ public class WelcomeHandler implements MessageHandler {
     public void run() {
         WelcomeContent welcomeContent = (WelcomeContent) clientMessage.getPayload();
         AppConfig.info.setNodeId(welcomeContent.getNewId());
+        AppConfig.info.getNodeInfo().setNodeId(welcomeContent.getNewId());
         AppConfig.state.getNodes().put(AppConfig.info.getNodeId(), AppConfig.info.getNodeInfo());
         for (Map.Entry<Integer, NodeInfo> entry : welcomeContent.getState().getNodes().entrySet()) {
             AppConfig.state.getNodes().merge(entry.getKey(), entry.getValue(), (nodeInfo, nodeInfo2) -> nodeInfo2);

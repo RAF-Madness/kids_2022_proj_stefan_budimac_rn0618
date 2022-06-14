@@ -15,6 +15,7 @@ public class ServentInitializer implements Runnable {
     public void run() {
         try {
             NodeInfo senderInfo = new NodeInfo(AppConfig.info.getPort(), InetAddress.getLocalHost().getHostAddress(), -2, "", "");
+            AppConfig.info.setNodeInfo(senderInfo);
             NodeInfo receiverInfo = new NodeInfo(AppConfig.info.getBootstrapPort(), AppConfig.info.getBootstrapIpAddress(), -1, "", "");
             Message hailMessage = new HailMessage(senderInfo, receiverInfo);
             MessageUtil.sendMessage(hailMessage);
