@@ -26,7 +26,6 @@ public class ConnectionResponseHandler implements MessageHandler {
                 continue;
             }
             Message enterMessage = new EnterMessage(AppConfig.info.getNodeInfo(), entry.getValue());
-            enterMessage.setPayload(clientMessage.getPayload());
             MessageUtil.sendMessage(enterMessage);
         }
         Message joinMessage = new JoinMessage(AppConfig.info.getNodeInfo(), new NodeInfo(AppConfig.BOOTSTRAP.getPort(), AppConfig.BOOTSTRAP.getIpAddress(), -1, "", ""));

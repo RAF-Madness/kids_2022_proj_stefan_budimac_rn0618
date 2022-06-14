@@ -1,7 +1,6 @@
 package servent.handler;
 
 import app.AppConfig;
-import app.model.NodeInfo;
 import servent.message.Message;
 
 public class EnterHandler implements MessageHandler {
@@ -13,9 +12,8 @@ public class EnterHandler implements MessageHandler {
 
     @Override
     public void run() {
-        NodeInfo enteredNode = (NodeInfo) clientMessage.getPayload();
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.getNodes().put((Integer) clientMessage.getPayload(), enteredNode);
+            AppConfig.state.getNodes().put(clientMessage.getSender().getNodeId(), clientMessage.getSender());
         }
     }
 }
