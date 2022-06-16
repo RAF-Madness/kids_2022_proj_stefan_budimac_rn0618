@@ -2,14 +2,14 @@ package servent.handler;
 
 import app.AppConfig;
 import app.model.WelcomeContent;
-import servent.message.Message;
+import servent.message.SystemKnockMessage;
 import servent.message.WelcomeMessage;
 import servent.message.util.MessageUtil;
 
 public class SystemKnockHandler implements MessageHandler {
-    private Message clientMessage;
+    private SystemKnockMessage clientMessage;
 
-    public SystemKnockHandler(Message clientMessage) {
+    public SystemKnockHandler(SystemKnockMessage clientMessage) {
         this.clientMessage = clientMessage;
     }
 
@@ -19,9 +19,9 @@ public class SystemKnockHandler implements MessageHandler {
         synchronized (AppConfig.idLock) {
             newId = AppConfig.info.getNodeId() + 1;
         }
-        Message welcomeMessage = new WelcomeMessage(clientMessage.getReceiver(), clientMessage.getSender());
+        WelcomeMessage welcomeMessage = new WelcomeMessage(clientMessage.getReceiver(), clientMessage.getSender());
         synchronized (AppConfig.stateLock) {
-            AppConfig.state.setNext(clientMessage.getSender());
+            AppConfig.info.setNext(clientMessage.getSender());
         }
         WelcomeContent welcomeContent = new WelcomeContent(newId, AppConfig.state);
         welcomeMessage.setPayload(welcomeContent);
