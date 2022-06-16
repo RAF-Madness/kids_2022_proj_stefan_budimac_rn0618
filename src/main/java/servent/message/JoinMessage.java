@@ -4,7 +4,7 @@ import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class JoinMessage extends BasicMessage<Integer> {
+public class JoinMessage extends BasicMessage<NodeInfo> {
     @Serial
     private static final long serialVersionUID = 7852113346274336788L;
 
