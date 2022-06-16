@@ -1,10 +1,12 @@
 package servent.message;
 
+import app.model.Job;
 import app.model.NodeInfo;
+import app.model.Result;
 
 import java.io.Serial;
 
-public class StoppedJobInfoMessage extends BasicMessage<Object> {
+public class StoppedJobInfoMessage extends BasicMessage<Result> {
     @Serial
     private static final long serialVersionUID = 9000488387271761L;
 

@@ -2,6 +2,7 @@ package servent.handler;
 
 import app.AppConfig;
 import app.ChaosState;
+import app.FractalCruncher;
 import app.model.NodeInfo;
 import servent.message.ContactMessage;
 import servent.message.JoinMessage;
@@ -31,7 +32,6 @@ public class ContactHandler implements MessageHandler {
             MessageUtil.sendMessage(joinMessage);
         } else {
             SystemKnockMessage systemKnockMessage = new SystemKnockMessage(AppConfig.info.getNodeInfo(), messageContent);
-            AppConfig.state = new ChaosState();
             MessageUtil.sendMessage(systemKnockMessage);
         }
     }

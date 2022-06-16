@@ -1,10 +1,11 @@
 package servent.message;
 
+import app.model.ClusterWelcomeContent;
 import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class ClusterWelcomeMessage extends BasicMessage<Object> {
+public class ClusterWelcomeMessage extends BasicMessage<ClusterWelcomeContent> {
     @Serial
     private static final long serialVersionUID = 9964406590440358L;
 

@@ -3,6 +3,7 @@ package servent;
 import app.AppConfig;
 import app.Cancellable;
 import servent.handler.*;
+import servent.handler.util.JobGenesisSender;
 import servent.message.*;
 import servent.message.util.MessageUtil;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -17,6 +19,8 @@ public class SimpleServentListener implements Runnable, Cancellable {
     private volatile boolean working = true;
 
     private final ExecutorService handlerThreadPool = Executors.newWorkStealingPool();
+
+    private CyclicBarrier stoppedJobInfoBarrier;
 
     public SimpleServentListener() {}
 
@@ -66,7 +70,11 @@ public class SimpleServentListener implements Runnable, Cancellable {
                         messageHandler = new StopShareJobHandler((StopShareJobMessage) clientMessage);
                     }
                     case STOPPED_JOB_INFO -> {
-                        messageHandler = new StoppedJobInfoHandler((StoppedJobInfoMessage) clientMessage);
+                        if (AppConfig.stoppedJobInfoCollected) {
+                            stoppedJobInfoBarrier = new CyclicBarrier(AppConfig.state.getNodes().size() - 1, new JobGenesisSender());
+                            AppConfig.stoppedJobInfoCollected = false;
+                        }
+                        messageHandler = new StoppedJobInfoHandler((StoppedJobInfoMessage) clientMessage, stoppedJobInfoBarrier);
                     }
                     case START_JOB_GENESIS -> {
                         messageHandler = new StartJobGenesisHandler((StartJobGenesisMessage) clientMessage);
@@ -88,6 +96,21 @@ public class SimpleServentListener implements Runnable, Cancellable {
                     }
                     case ENTERED_CLUSTER -> {
                         messageHandler = new EnteredClusterHandler((EnteredClusterMessage) clientMessage);
+                    }
+                    case START_JOB -> {
+                        messageHandler = new StartJobHandler((StartJobMessage) clientMessage);
+                    }
+                    case IMAGE_INFO_REQUEST -> {
+                        messageHandler = new ImageInfoRequestHandler((ImageInfoRequestMessage) clientMessage);
+                    }
+                    case IMAGE_INFO -> {
+                        messageHandler = new ImageInfoHandler((ImageInfoMessage) clientMessage);
+                    }
+                    case JOB_STATUS_REQUEST -> {
+                        messageHandler = new JobStatusRequestHandler((JobStatusRequestMessage) clientMessage);
+                    }
+                    case JOB_STATUS -> {
+                        messageHandler = new JobStatusHandler((JobStatusMessage) clientMessage);
                     }
                 }
                 handlerThreadPool.submit(messageHandler);

@@ -2,13 +2,12 @@ package cli.command;
 
 import app.AppConfig;
 import app.model.Job;
+import app.model.NodeInfo;
 import app.model.Point;
 import servent.message.StopShareJobMessage;
+import servent.message.util.MessageUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class StartCommand implements CLICommand {
     @Override
@@ -24,26 +23,18 @@ public class StartCommand implements CLICommand {
                 AppConfig.timestampedErrorPrint("No such job with given name.");
                 return;
             }
-            if (AppConfig.state.getJobs().containsKey(job.getName())) {
-                AppConfig.timestampedErrorPrint("Job with given name already exists.");
-                return;
-            }
-            if (AppConfig.state.activeJobs().containsKey(job.getName())) {
+            if (AppConfig.state.getActiveJobs().containsKey(job.getName())) {
                 AppConfig.timestampedErrorPrint("Job is already being worked on.");
                 return;
             }
-            if (AppConfig.state.activeJobs().size() >= AppConfig.state.getNodes().size()) {
+            if (AppConfig.state.getActiveJobs().size() >= AppConfig.state.getNodes().size()) {
                 AppConfig.timestampedErrorPrint("Not enough workers to do the job.");
                 return;
             }
-            for (Map.Entry entry : AppConfig.state.getNodes().entrySet()) {
-                if (entry.getKey().equals(AppConfig.info.getNodeId())) {
-                    continue;
-                }
-                //StopShareJobMessage message = new StopShareJobMessage()
-            }
+            AppConfig.state.getActiveJobs().put(job.getName(), job);
+            broadcastStopShareJobs(job.getName());
         } else {
-            if (AppConfig.state.activeJobs().size() >= AppConfig.state.getNodes().size()) {
+            if (AppConfig.state.getActiveJobs().size() >= AppConfig.state.getNodes().size()) {
                 AppConfig.timestampedErrorPrint("Not enough workers to do the job.");
                 return;
             }
@@ -54,26 +45,44 @@ public class StartCommand implements CLICommand {
                 AppConfig.timestampedErrorPrint("Job with given name already exists.");
                 return;
             }
-            System.out.println("Enter job point count: ");
-            Integer pointCount = scanner.nextInt();
-            System.out.println("Enter point generation proportion: ");
-            Double p = scanner.nextDouble();
-            System.out.println("Enter pane width: ");
-            Integer width = scanner.nextInt();
-            System.out.println("Enter pane height: ");
-            Integer height = scanner.nextInt();
-            System.out.println("Enter main points of the fractal structure: ");
-            String points = scanner.nextLine();
-            List<Point> mainPoints = new ArrayList<>();
-            String[] pointList = points.split(",");
-            for (int i = 0; i < pointList.length; i += 2) {
-                mainPoints.add(new Point(Double.parseDouble(pointList[i]), Double.parseDouble(pointList[i + 1])));
-            }
-            Job newJob = new Job(name, pointCount, p, width, height, mainPoints);
-            if (AppConfig.state.activeJobs().containsKey(newJob.getName())) {
-                AppConfig.timestampedErrorPrint("Job is already being worked on.");
+            try {
+                System.out.println("Enter job point count: ");
+                Integer pointCount = scanner.nextInt();
+                System.out.println("Enter point generation proportion: ");
+                Double p = scanner.nextDouble();
+                System.out.println("Enter pane width: ");
+                Integer width = scanner.nextInt();
+                System.out.println("Enter pane height: ");
+                Integer height = scanner.nextInt();
+                System.out.println("Enter main points of the fractal structure: ");
+                String points = scanner.nextLine();
+                List<Point> mainPoints = new ArrayList<>();
+                String[] pointList = points.split(",");
+                for (int i = 0; i < pointList.length; i += 2) {
+                    mainPoints.add(new Point(Double.parseDouble(pointList[i]), Double.parseDouble(pointList[i + 1])));
+                }
+                Job newJob = new Job(name, pointCount, p, width, height, mainPoints);
+                if (AppConfig.state.getActiveJobs().containsKey(newJob.getName())) {
+                    AppConfig.timestampedErrorPrint("Job is already being worked on.");
+                    return;
+                }
+                AppConfig.state.getActiveJobs().put(name, newJob);
+                broadcastStopShareJobs(name);
+            } catch (InputMismatchException | NumberFormatException e) {
+                AppConfig.timestampedErrorPrint("Invalid job info entered.");
                 return;
             }
+        }
+    }
+
+    private void broadcastStopShareJobs(String payload) {
+        for (Map.Entry<Integer, NodeInfo> entry : AppConfig.state.getNodes().entrySet()) {
+            if (entry.getKey().equals(AppConfig.info.getNodeId())) {
+                continue;
+            }
+            StopShareJobMessage stopShareJobMessage = new StopShareJobMessage(AppConfig.info.getNodeInfo(), entry.getValue());
+            stopShareJobMessage.setPayload(payload);
+            MessageUtil.sendMessage(stopShareJobMessage);
         }
     }
 }

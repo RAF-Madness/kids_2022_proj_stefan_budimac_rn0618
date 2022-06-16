@@ -1,10 +1,12 @@
 package servent.message;
 
+import app.model.GenesisContent;
 import app.model.NodeInfo;
+import app.model.Result;
 
 import java.io.Serial;
 
-public class StartJobGenesisMessage extends BasicMessage<Object> {
+public class StartJobGenesisMessage extends BasicMessage<GenesisContent> {
     @Serial
     private static final long serialVersionUID = 475625298345262L;
 

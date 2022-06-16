@@ -1,10 +1,10 @@
 package app.model;
 
+import app.FractalCruncher;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class Worker implements Serializable {
     @Serial
@@ -21,10 +21,12 @@ public class Worker implements Serializable {
     private transient NodeInfo nodeInfo;
     private transient NodeInfo previous;
     private transient NodeInfo next;
-    private transient Map<Integer, NodeInfo> clusterNeighbours;
+    private transient FractalCruncher fractalCruncher;
+    private transient JobStatus jobStatus;
+    private transient String currentJobName;
 
     public Worker() {
-        clusterNeighbours = new ConcurrentHashMap<>();
+        this.jobStatus = new JobStatus();
     }
 
     public Worker(int port, String bootstrapIpAddress, Integer bootstrapPort, int weakLimit, int strongLimit, List<Job> jobs) {
@@ -34,7 +36,6 @@ public class Worker implements Serializable {
         this.weakLimit = weakLimit;
         this.strongLimit = strongLimit;
         this.jobs = jobs;
-        clusterNeighbours = new ConcurrentHashMap<>();
     }
 
     public Integer getPort() {
@@ -125,11 +126,27 @@ public class Worker implements Serializable {
         this.next = next;
     }
 
-    public Map<Integer, NodeInfo> getClusterNeighbours() {
-        return clusterNeighbours;
+    public String getCurrentJobName() {
+        return currentJobName;
     }
 
-    public void setClusterNeighbours(Map<Integer, NodeInfo> clusterNeighbours) {
-        this.clusterNeighbours = clusterNeighbours;
+    public void setCurrentJobName(String currentJobName) {
+        this.currentJobName = currentJobName;
+    }
+
+    public FractalCruncher getFractalCruncher() {
+        return fractalCruncher;
+    }
+
+    public void setFractalCruncher(FractalCruncher fractalCruncher) {
+        this.fractalCruncher = fractalCruncher;
+    }
+
+    public JobStatus getJobStatus() {
+        return jobStatus;
+    }
+
+    public void setJobStatus(JobStatus jobStatus) {
+        this.jobStatus = jobStatus;
     }
 }

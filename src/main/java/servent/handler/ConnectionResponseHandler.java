@@ -1,6 +1,7 @@
 package servent.handler;
 
 import app.AppConfig;
+import app.FractalCruncher;
 import app.model.NodeInfo;
 import servent.message.ConnectionResponseMessage;
 import servent.message.EnterMessage;

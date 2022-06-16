@@ -38,9 +38,11 @@ public class CLIParser implements Runnable, Cancellable {
             }
             boolean found = false;
             for (CLICommand command : commandList) {
-                command.execute(commandArgs);
-                found = true;
-                break;
+                if (command.commandName().equals(commandName)) {
+                    command.execute(commandArgs);
+                    found = true;
+                    break;
+                }
             }
             if (!found) {
                 AppConfig.timestampedErrorPrint("Unknown command: " + commandName);

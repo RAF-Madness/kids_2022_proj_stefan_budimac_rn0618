@@ -3,6 +3,7 @@ package app.model;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Job implements Serializable {
     @Serial
@@ -14,8 +15,12 @@ public class Job implements Serializable {
     private Integer width;
     private Integer height;
     private List<Point> mainPoints;
+    private List<Point> calculatedPoints;
 
-    public Job() {}
+    public Job() {
+        mainPoints = new CopyOnWriteArrayList<>();
+        calculatedPoints = new CopyOnWriteArrayList<>();
+    }
 
     public Job(String name, Integer pointCount, Double p, Integer width, Integer height, List<Point> mainPoints) {
         this.name = name;
@@ -24,6 +29,7 @@ public class Job implements Serializable {
         this.width = width;
         this.height = height;
         this.mainPoints = mainPoints;
+        calculatedPoints = new CopyOnWriteArrayList<>();
     }
 
     public String getName() {
@@ -72,5 +78,13 @@ public class Job implements Serializable {
 
     public void setMainPoints(List<Point> mainPoints) {
         this.mainPoints = mainPoints;
+    }
+
+    public List<Point> getCalculatedPoints() {
+        return calculatedPoints;
+    }
+
+    public void setCalculatedPoints(List<Point> calculatedPoints) {
+        this.calculatedPoints = calculatedPoints;
     }
 }

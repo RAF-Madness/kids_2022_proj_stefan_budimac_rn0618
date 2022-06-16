@@ -1,5 +1,6 @@
 package servent.handler;
 
+import app.AppConfig;
 import servent.message.EnteredClusterMessage;
 
 public class EnteredClusterHandler implements MessageHandler {
@@ -11,6 +12,6 @@ public class EnteredClusterHandler implements MessageHandler {
 
     @Override
     public void run() {
-
+        AppConfig.state.getClusterNodes().put(clientMessage.getSender().getNodeId(), clientMessage.getSender());
     }
 }

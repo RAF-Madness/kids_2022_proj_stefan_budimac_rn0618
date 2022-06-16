@@ -4,7 +4,7 @@ import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class ApproachClusterMessage extends BasicMessage<Object> {
+public class ApproachClusterMessage extends BasicMessage<NodeInfo> {
     @Serial
     private static final long serialVersionUID = 123444213121234L;
 

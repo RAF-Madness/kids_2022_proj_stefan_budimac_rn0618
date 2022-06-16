@@ -2,6 +2,7 @@ package app;
 
 import app.model.BootstrapInfo;
 import app.model.Job;
+import app.model.Result;
 import app.model.Worker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,6 +20,7 @@ public class AppConfig {
     public static ChaosState state;
     public static final Object idLock = new Object();
     public static final Object stateLock = new Object();
+    public static boolean stoppedJobInfoCollected = true;
 
     public static void timestampedStandardPrint(String message) {
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
@@ -36,11 +38,12 @@ public class AppConfig {
         try {
             String json = new String(Files.readAllBytes(Paths.get("src/main/resources/chaos/workers/worker_" + workerNumber + "/config.json")));
             Gson gson = new GsonBuilder().create();
+            AppConfig.state = new ChaosState();
             info = new Worker();
             info = gson.fromJson(json, Worker.class);
-            AppConfig.state = new ChaosState();
             for (Job job : info.getJobs()) {
                 AppConfig.state.getJobs().put(job.getName(), job);
+                AppConfig.state.getResults().put(job.getName(), new Result(job.getName()));
             }
             BOOTSTRAP = new BootstrapInfo(info.getBootstrapPort(), info.getBootstrapIpAddress());
         } catch (IOException e) {

@@ -4,7 +4,7 @@ import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class ClusterConnectionResponseMessage extends BasicMessage<Object> {
+public class ClusterConnectionResponseMessage extends BasicMessage<Boolean> {
     @Serial
     private static final long serialVersionUID = 111090000909934L;
 

@@ -4,7 +4,7 @@ import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class StopShareJobMessage extends BasicMessage<Object> {
+public class StopShareJobMessage extends BasicMessage<String> {
     @Serial
     private static final long serialVersionUID = 9958584463662388L;
 
