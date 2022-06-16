@@ -2,9 +2,9 @@ package app.model;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Worker implements Serializable {
     @Serial
@@ -19,8 +19,13 @@ public class Worker implements Serializable {
     private transient Integer nodeId;
     private transient String fractalId;
     private transient NodeInfo nodeInfo;
+    private transient NodeInfo previous;
+    private transient NodeInfo next;
+    private transient Map<Integer, NodeInfo> clusterNeighbours;
 
-    public Worker() {}
+    public Worker() {
+        clusterNeighbours = new ConcurrentHashMap<>();
+    }
 
     public Worker(int port, String bootstrapIpAddress, Integer bootstrapPort, int weakLimit, int strongLimit, List<Job> jobs) {
         this.port = port;
@@ -29,6 +34,7 @@ public class Worker implements Serializable {
         this.weakLimit = weakLimit;
         this.strongLimit = strongLimit;
         this.jobs = jobs;
+        clusterNeighbours = new ConcurrentHashMap<>();
     }
 
     public Integer getPort() {
@@ -101,5 +107,29 @@ public class Worker implements Serializable {
 
     public void setFractalId(String fractalId) {
         this.fractalId = fractalId;
+    }
+
+    public NodeInfo getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(NodeInfo preveous) {
+        this.previous = preveous;
+    }
+
+    public NodeInfo getNext() {
+        return next;
+    }
+
+    public void setNext(NodeInfo next) {
+        this.next = next;
+    }
+
+    public Map<Integer, NodeInfo> getClusterNeighbours() {
+        return clusterNeighbours;
+    }
+
+    public void setClusterNeighbours(Map<Integer, NodeInfo> clusterNeighbours) {
+        this.clusterNeighbours = clusterNeighbours;
     }
 }

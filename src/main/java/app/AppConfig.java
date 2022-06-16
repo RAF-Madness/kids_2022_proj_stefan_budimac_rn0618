@@ -36,6 +36,7 @@ public class AppConfig {
         try {
             String json = new String(Files.readAllBytes(Paths.get("src/main/resources/chaos/workers/worker_" + workerNumber + "/config.json")));
             Gson gson = new GsonBuilder().create();
+            info = new Worker();
             info = gson.fromJson(json, Worker.class);
             AppConfig.state = new ChaosState();
             for (Job job : info.getJobs()) {
