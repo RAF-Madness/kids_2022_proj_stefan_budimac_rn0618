@@ -1,11 +1,11 @@
 package servent.handler;
 
-import servent.message.Message;
+import servent.message.EnteredClusterMessage;
 
 public class EnteredClusterHandler implements MessageHandler {
-    private Message clientMessage;
+    private EnteredClusterMessage clientMessage;
 
-    public EnteredClusterHandler(Message clientMessage) {
+    public EnteredClusterHandler(EnteredClusterMessage clientMessage) {
         this.clientMessage = clientMessage;
     }
 

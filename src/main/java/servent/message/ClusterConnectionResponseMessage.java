@@ -4,15 +4,15 @@ import app.model.NodeInfo;
 
 import java.io.Serial;
 
-public class ClusterConnectionResponse extends BasicMessage<Object> {
+public class ClusterConnectionResponseMessage extends BasicMessage<Object> {
     @Serial
     private static final long serialVersionUID = 111090000909934L;
 
-    public ClusterConnectionResponse() {
+    public ClusterConnectionResponseMessage() {
         this.setType(MessageType.CLUSTER_CONNECTION_RESPONSE);
     }
 
-    public ClusterConnectionResponse(NodeInfo sender, NodeInfo receiver) {
+    public ClusterConnectionResponseMessage(NodeInfo sender, NodeInfo receiver) {
         super(MessageType.CLUSTER_CONNECTION_RESPONSE, sender, receiver);
     }
 }

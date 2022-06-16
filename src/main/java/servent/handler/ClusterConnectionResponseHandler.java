@@ -1,11 +1,11 @@
 package servent.handler;
 
-import servent.message.Message;
+import servent.message.ClusterConnectionResponseMessage;
 
 public class ClusterConnectionResponseHandler implements MessageHandler {
-    private Message clientMessage;
+    private ClusterConnectionResponseMessage clientMessage;
 
-    public ClusterConnectionResponseHandler(Message clientMessage) {
+    public ClusterConnectionResponseHandler(ClusterConnectionResponseMessage clientMessage) {
         this.clientMessage = clientMessage;
     }
 

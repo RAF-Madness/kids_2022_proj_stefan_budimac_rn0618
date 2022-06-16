@@ -3,9 +3,11 @@ package cli.command;
 import app.AppConfig;
 import app.model.Job;
 import app.model.Point;
+import servent.message.StopShareJobMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class StartCommand implements CLICommand {
@@ -33,6 +35,12 @@ public class StartCommand implements CLICommand {
             if (AppConfig.state.activeJobs().size() >= AppConfig.state.getNodes().size()) {
                 AppConfig.timestampedErrorPrint("Not enough workers to do the job.");
                 return;
+            }
+            for (Map.Entry entry : AppConfig.state.getNodes().entrySet()) {
+                if (entry.getKey().equals(AppConfig.info.getNodeId())) {
+                    continue;
+                }
+                //StopShareJobMessage message = new StopShareJobMessage()
             }
         } else {
             if (AppConfig.state.activeJobs().size() >= AppConfig.state.getNodes().size()) {

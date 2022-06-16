@@ -1,11 +1,11 @@
 package servent.handler;
 
-import servent.message.Message;
+import servent.message.ClusterKnockMessage;
 
 public class ClusterKnockHandler implements MessageHandler {
-    private Message clientMessage;
+    private ClusterKnockMessage clientMessage;
 
-    public ClusterKnockHandler(Message clientMessage) {
+    public ClusterKnockHandler(ClusterKnockMessage clientMessage) {
         this.clientMessage = clientMessage;
     }
 

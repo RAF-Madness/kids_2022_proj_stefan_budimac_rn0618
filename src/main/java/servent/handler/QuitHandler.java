@@ -1,12 +1,12 @@
 package servent.handler;
 
 import app.AppConfig;
-import servent.message.Message;
+import servent.message.QuitMessage;
 
 public class QuitHandler implements MessageHandler {
-    private Message clientMessage;
+    private QuitMessage clientMessage;
 
-    public QuitHandler(Message clientMessage) {
+    public QuitHandler(QuitMessage clientMessage) {
         this.clientMessage = clientMessage;
     }
 

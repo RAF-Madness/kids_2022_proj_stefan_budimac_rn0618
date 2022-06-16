@@ -1,12 +1,12 @@
 package servent.handler;
 
 import app.AppConfig;
-import servent.message.Message;
+import servent.message.EnterMessage;
 
 public class EnterHandler implements MessageHandler {
-    private Message clientMessage;
+    private EnterMessage clientMessage;
 
-    public EnterHandler(Message clientMessage) {
+    public EnterHandler(EnterMessage clientMessage) {
         this.clientMessage = clientMessage;
     }
 

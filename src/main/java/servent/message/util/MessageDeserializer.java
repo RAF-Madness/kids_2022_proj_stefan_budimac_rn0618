@@ -24,8 +24,8 @@ public class MessageDeserializer {
         adapterFactory.registerSubtype(ClusterKnockMessage.class, "CLUSTER_KNOCK");
         adapterFactory.registerSubtype(ClusterWelcomeMessage.class, "CLUSTER_WELCOME");
         adapterFactory.registerSubtype(EnteredClusterMessage.class, "ENTERED_CLUSTER");
-        adapterFactory.registerSubtype(ClusterConnectionRequest.class, "CLUSTER_CONNECTION_REQUEST");
-        adapterFactory.registerSubtype(ClusterConnectionResponse.class, "CLUSTER_CONNECTION_RESPONSE");
+        adapterFactory.registerSubtype(ClusterConnectionRequestMessage.class, "CLUSTER_CONNECTION_REQUEST");
+        adapterFactory.registerSubtype(ClusterConnectionResponseMessage.class, "CLUSTER_CONNECTION_RESPONSE");
     }
 
     public void registerMessageType(Class<? extends Message<?>> messageType, String messageTypeName) {

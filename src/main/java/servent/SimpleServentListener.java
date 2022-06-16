@@ -3,7 +3,7 @@ package servent;
 import app.AppConfig;
 import app.Cancellable;
 import servent.handler.*;
-import servent.message.Message;
+import servent.message.*;
 import servent.message.util.MessageUtil;
 
 import java.io.IOException;
@@ -39,28 +39,55 @@ public class SimpleServentListener implements Runnable, Cancellable {
                 MessageHandler messageHandler = new NullHandler(clientMessage);
                 switch (clientMessage.getType()) {
                     case CONTACT -> {
-                        messageHandler = new ContactHandler(clientMessage);
+                        messageHandler = new ContactHandler((ContactMessage) clientMessage);
                     }
                     case SYSTEM_KNOCK -> {
-                        messageHandler = new SystemKnockHandler(clientMessage);
+                        messageHandler = new SystemKnockHandler((SystemKnockMessage) clientMessage);
                     }
                     case WELCOME -> {
-                        messageHandler = new WelcomeHandler(clientMessage);
+                        messageHandler = new WelcomeHandler((WelcomeMessage) clientMessage);
                     }
                     case CONNECTION_REQUEST -> {
-                        messageHandler = new ConnectionRequestHandler(clientMessage);
+                        messageHandler = new ConnectionRequestHandler((ConnectionRequestMessage) clientMessage);
                     }
                     case CONNECTION_RESPONSE -> {
-                        messageHandler = new ConnectionResponseHandler(clientMessage);
+                        messageHandler = new ConnectionResponseHandler((ConnectionResponseMessage) clientMessage);
                     }
                     case ENTER -> {
-                        messageHandler = new EnterHandler(clientMessage);
+                        messageHandler = new EnterHandler((EnterMessage) clientMessage);
                     }
                     case REJECT -> {
                         messageHandler = new RejectHandler();
                     }
                     case QUIT -> {
-                        messageHandler = new QuitHandler(clientMessage);
+                        messageHandler = new QuitHandler((QuitMessage) clientMessage);
+                    }
+                    case STOP_SHARE_JOB -> {
+                        messageHandler = new StopShareJobHandler((StopShareJobMessage) clientMessage);
+                    }
+                    case STOPPED_JOB_INFO -> {
+                        messageHandler = new StoppedJobInfoHandler((StoppedJobInfoMessage) clientMessage);
+                    }
+                    case START_JOB_GENESIS -> {
+                        messageHandler = new StartJobGenesisHandler((StartJobGenesisMessage) clientMessage);
+                    }
+                    case APPROACH_CLUSTER -> {
+                        messageHandler = new ApproachClusterHandler((ApproachClusterMessage) clientMessage);
+                    }
+                    case CLUSTER_KNOCK -> {
+                        messageHandler = new ClusterKnockHandler((ClusterKnockMessage) clientMessage);
+                    }
+                    case CLUSTER_WELCOME -> {
+                        messageHandler = new ClusterWelcomeHandler((ClusterWelcomeMessage) clientMessage);
+                    }
+                    case CLUSTER_CONNECTION_REQUEST -> {
+                        messageHandler = new ClusterConnectionRequestHandler((ClusterConnectionRequestMessage) clientMessage);
+                    }
+                    case CLUSTER_CONNECTION_RESPONSE -> {
+                        messageHandler = new ClusterConnectionResponseHandler((ClusterConnectionResponseMessage) clientMessage);
+                    }
+                    case ENTERED_CLUSTER -> {
+                        messageHandler = new EnteredClusterHandler((EnteredClusterMessage) clientMessage);
                     }
                 }
                 handlerThreadPool.submit(messageHandler);
